@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+    <defs>
+        <radialGradient id="crimsonGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#9e1b32" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#9e1b32" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
+    <rect width="800" height="600" fill="#1a1a1f"/>
+    <path d="M 150 150 C 400 -50 600 300 400 500 C 200 700 -100 350 150 150 Z" fill="#a84c1c" opacity="0.8"/>
+    <rect x="450" y="150" width="250" height="300" fill="#1b2a4a" rx="20"/>
+    <line x1="0" y1="200" x2="800" y2="400" stroke="#00b4d8" stroke-width="5"/>
+    <line x1="800" y1="200" x2="0" y2="400" stroke="#00b4d8" stroke-width="5"/>
+    <circle cx="200" cy="450" r="140" fill="url(#crimsonGlow)"/>
+    <circle cx="600" cy="450" r="60" fill="#c98a20"/>
+    <polygon points="300,100 400,250 200,250" fill="#e0c070"/>
+    <circle cx="100" cy="100" r="20" fill="#00b4d8"/>
+</svg>
