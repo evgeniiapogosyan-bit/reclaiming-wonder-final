@@ -520,7 +520,7 @@ body {
 
 .marketplace-header {
     text-align: center;
-    padding: 0 40px 60px;
+    padding: 0 40px 40px;
     position: relative;
     z-index: 1;
 }
@@ -542,85 +542,120 @@ body {
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: rgba(240, 232, 216, 0.4);
-    margin: 0;
+    margin: 0 0 24px;
 }
 
-/* ── Grid ── */
+/* Category Filter Tabs Nav */
+.mkt-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px auto 0;
+    max-width: 960px;
+}
+
+.mkt-tab {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(240, 232, 216, 0.12);
+    border-radius: 999px;
+    color: rgba(240, 232, 216, 0.65);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.mkt-tab:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #f0e8d8;
+    border-color: rgba(240, 232, 216, 0.3);
+}
+
+.mkt-tab.active {
+    background: rgba(201, 162, 39, 0.15);
+    border-color: rgba(201, 162, 39, 0.6);
+    color: #f0c850;
+    box-shadow: 0 0 16px rgba(201, 162, 39, 0.2);
+}
+
+/* Grid layout with minmax(140px, 1fr) for bold visual density without dark voids */
 .marketplace-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
     padding: 0 40px;
     position: relative;
     z-index: 1;
 }
 
-/* ── Individual item card ── */
+/* Individual item card */
 .mkt-item {
     aspect-ratio: 3 / 4;
-    background: rgba(255, 255, 255, 0.032);
-    border: 1px solid rgba(240, 232, 216, 0.08);
-    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(240, 232, 216, 0.1);
+    border-radius: 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 18px;
-    padding: 28px 20px 22px;
+    justify-content: space-between;
+    padding: 14px 10px 12px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     transition:
-        transform       0.45s cubic-bezier(0.25, 1, 0.5, 1),
-        border-color    0.35s ease,
-        background      0.35s ease,
-        box-shadow      0.45s ease;
+        transform       0.35s cubic-bezier(0.25, 1, 0.5, 1),
+        border-color    0.3s ease,
+        background      0.3s ease,
+        box-shadow      0.35s ease;
     will-change: transform;
-
-    /* Isolate stacking context — keeps glow contained */
     isolation: isolate;
 }
 
-/* Hover: lift + warm glow */
 .mkt-item:hover {
-    transform: translateY(-6px) scale(1.025);
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(240, 232, 216, 0.22);
+    transform: translateY(-5px) scale(1.03);
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(240, 232, 216, 0.28);
     box-shadow:
-        0  12px 40px rgba(0, 0, 0, 0.45),
-        0   0   0   1px rgba(240, 232, 216, 0.12) inset,
-        0   0  24px rgba(200, 185, 150, 0.08);
+        0 12px 36px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(240, 232, 216, 0.15) inset,
+        0 0 24px rgba(200, 185, 150, 0.12);
 }
 
-/* Shimmer sweep on hover */
 .mkt-item::after {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(
         135deg,
-        transparent          30%,
-        rgba(255,255,255,0.04) 50%,
-        transparent          70%
+        transparent 30%,
+        rgba(255, 255, 255, 0.06) 50%,
+        transparent 70%
     );
     transform: translateX(-100%);
-    transition: transform 0.55s ease;
+    transition: transform 0.5s ease;
     pointer-events: none;
     border-radius: inherit;
 }
+
 .mkt-item:hover::after {
     transform: translateX(100%);
 }
 
-/* Active press */
 .mkt-item:active {
-    transform: translateY(-2px) scale(0.98);
-    transition-duration: 0.12s;
+    transform: translateY(-1px) scale(0.98);
+    transition-duration: 0.1s;
 }
 
-/* ── SVG icon wrapper ── */
+/* SVG icon wrapper - scaled up for bold expressive impact */
 .mkt-icon {
     width: 100%;
+    height: 78%;
     flex: 1;
     display: flex;
     align-items: center;
@@ -629,107 +664,53 @@ body {
 }
 
 .mkt-icon svg {
-    width: 70%;
-    height: 70%;
-    color: #d4c5a5;          /* warm cream — all SVG shapes use currentColor */
-    filter: drop-shadow(0 4px 12px rgba(180, 160, 110, 0.2));
-    transition: filter 0.35s ease, color 0.35s ease;
+    width: 90%;
+    height: 90%;
+    max-height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
+    transition: filter 0.35s ease, transform 0.35s ease;
 }
 
 .mkt-item:hover .mkt-icon svg {
-    color: #ecddb8;
-    filter: drop-shadow(0 6px 18px rgba(210, 190, 130, 0.35));
+    transform: scale(1.06);
+    filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.6)) brightness(1.12) saturate(1.15);
 }
 
-/* ── Label ── */
+/* Label */
 .mkt-label {
     font-family: var(--font-serif);
     font-size: 0.72rem;
     font-weight: 400;
     font-style: italic;
-    letter-spacing: 0.04em;
-    color: rgba(240, 232, 216, 0.55);
+    letter-spacing: 0.03em;
+    color: rgba(240, 232, 216, 0.65);
     text-align: center;
-    line-height: 1.4;
+    line-height: 1.3;
     pointer-events: none;
     transition: color 0.3s ease;
 }
 
 .mkt-item:hover .mkt-label {
-    color: rgba(240, 232, 216, 0.85);
+    color: rgba(240, 232, 216, 0.95);
 }
 
-/* ── Responsive ── */
+/* Responsive */
 @media (max-width: 768px) {
     .marketplace-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 14px;
-        padding: 0 20px;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+        padding: 0 16px;
+    }
+    .mkt-nav {
+        gap: 6px;
+        padding: 0 10px;
+    }
+    .mkt-tab {
+        font-size: 0.7rem;
+        padding: 6px 12px;
     }
 }
-
-/* ── Section divider row (spans full grid width) ── */
-.mkt-divider {
-    grid-column: 1 / -1;           /* stretch across all columns */
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding: 28px 0 10px;
-    pointer-events: none;
-}
-
-.mkt-divider::before,
-.mkt-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(240, 232, 216, 0.14) 30%,
-        rgba(240, 232, 216, 0.14) 70%,
-        transparent
-    );
-}
-
-.mkt-divider span {
-    font-family: var(--font-sans);
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: rgba(240, 232, 216, 0.28);
-    white-space: nowrap;
-}
-
-/* ── Vivid variant — for texture/particle tiles with colored SVGs ── */
-.mkt-item--vivid {
-    background: rgba(255, 255, 255, 0.028);
-    border-color: rgba(240, 232, 216, 0.07);
-}
-
-.mkt-item--vivid:hover {
-    background: rgba(255, 255, 255, 0.055);
-    border-color: rgba(240, 232, 216, 0.18);
-    box-shadow:
-        0  14px 44px rgba(0, 0, 0, 0.5),
-        0   0  30px rgba(160, 140, 200, 0.07);
-}
-
-/* Vivid SVGs use inline colours — remove the currentColor filter */
-.mkt-item--vivid .mkt-icon svg {
-    color: inherit;               /* not used, but safe reset */
-    filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.35));
-    transition: filter 0.4s ease;
-}
-
-.mkt-item--vivid:hover .mkt-icon svg {
-    filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.2))
-            brightness(1.08)
-            saturate(1.15);
-}
-
-
 /* ==========================================================================
    Pigment & Glaze Swatches Ribbon
    ========================================================================== */
@@ -1520,5 +1501,6 @@ body {
     font-size: 1.4rem;
     color: #fff;
 }
+
 
 
