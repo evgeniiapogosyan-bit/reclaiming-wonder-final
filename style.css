@@ -36,7 +36,7 @@ body {
 /* ==========================================================================
    Layout Structures
    ========================================================================== */
-.scroll-container { width: 100%; position: relative; transform: skewY(var(--scroll-skew, 0deg)); transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1); transform-origin: center center; will-change: transform; }
+.scroll-container { width: 100%; position: relative; }
 
 .section {
     position: relative;
@@ -287,18 +287,15 @@ body {
 }
 
 /* Gentle sway variations between 1.2 and 1.8 degrees */
-@keyframes sway-slow {
-    0% { transform: rotate(-1.2deg); }
+
     100% { transform: rotate(1.2deg); }
 }
 
-@keyframes sway-medium {
-    0% { transform: rotate(-1.5deg); }
+
     100% { transform: rotate(1.5deg); }
 }
 
-@keyframes sway-fast {
-    0% { transform: rotate(-1.8deg); }
+
     100% { transform: rotate(1.8deg); }
 }
 
@@ -2126,3 +2123,4 @@ html.lenis, html.lenis body {
     scale: 1.02;
     z-index: 10;
 }
+
