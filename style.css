@@ -2368,3 +2368,32 @@ html.lenis, html.lenis body {
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
+/* Restored Leaf Content Styling */
+.leaf-content {
+    position: absolute;
+    bottom: 15vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 15;
+    text-align: center;
+    pointer-events: none;
+    width: 90%;
+    max-width: 600px;
+}
+.leaf-content h2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    color: #f0e8d8;
+    margin-bottom: 12px;
+    text-transform: lowercase;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.leaf-content p {
+    font-size: 1.1rem;
+    color: rgba(240, 232, 216, 0.7);
+    line-height: 1.5;
+    font-weight: 300;
+    font-style: italic;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
