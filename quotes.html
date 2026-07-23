@@ -187,26 +187,22 @@
 </div>
     </main>
 <script>
-// Scroll Animation Architecture
+// Anti-Gravity Scroll Architecture
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Initialize Lenis
+    // 1. Initialize Lenis (Weightless setup)
     const lenis = new Lenis({
-        duration: 1.2,
+        duration: 1.4,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         direction: 'vertical',
         gestureDirection: 'vertical',
         smooth: true,
+        smoothWheel: true,
+        wheelMultiplier: 0.9,
         mouseMultiplier: 1,
         smoothTouch: false,
         touchMultiplier: 2,
         infinite: false,
     });
-
-    function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
 
     // 2. DOM Elements
     const heroSection = document.getElementById('hero');
@@ -214,24 +210,60 @@ document.addEventListener('DOMContentLoaded', function() {
     const heroBgWrapper = document.querySelector('.hero-bg-video-wrapper');
     const gridItems = document.querySelectorAll('.gallery-grid .grid-item, .quotes-masonry-grid .quote-item');
     
-    // 3. Fade-In & Lift Intersection Observer
+    // Variables for velocity smoothing
+    let targetVelocity = 0;
+    let currentVelocity = 0;
+    
+    function raf(time) {
+        lenis.raf(time);
+        
+        // Smooth velocity interpolation for elastic distortion
+        currentVelocity += (targetVelocity - currentVelocity) * 0.1;
+        
+        // Calculate stretch (scaleY) based on smoothed velocity
+        // Max stretch of 1.03
+        const stretch = 1 + Math.min(Math.abs(currentVelocity) * 0.0015, 0.03);
+        
+        // Apply stretch to grid items
+        gridItems.forEach(item => {
+            // Only apply if not hovered (CSS handles hover state)
+            if (!item.matches(':hover')) {
+                item.style.setProperty('--scroll-stretch', stretch);
+            } else {
+                item.style.setProperty('--scroll-stretch', 1.02); // matches hover scale
+            }
+        });
+
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // 3. Smooth Float Reveal (Staggered per column)
     const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if(entry.isIntersecting) {
-                entry.target.classList.add('revealed');
-                // We keep observing if we want it to un-reveal, but usually premium sites just reveal once.
+                // Determine column based on left offset to stagger
+                const rect = entry.target.getBoundingClientRect();
+                const colIndex = Math.floor(rect.left / 200); // Approximate column
+                const delay = (colIndex % 3) * 150; // 0, 150, 300ms delays
+                
+                setTimeout(() => {
+                    entry.target.classList.add('revealed');
+                }, delay);
+                
                 observer.unobserve(entry.target);
             }
         });
-    }, { rootMargin: "0px 0px -100px 0px" });
+    }, { rootMargin: "0px 0px -50px 0px" });
 
     gridItems.forEach(item => {
         revealObserver.observe(item);
     });
 
-    // 4. Scroll Listener
+    // 4. Scroll Listener (Parallax & Velocity)
     lenis.on('scroll', (e) => {
         const scrollY = window.scrollY;
+        targetVelocity = e.velocity || 0; // Capture velocity
         
         // --- Hero Scale & Fade Effects ---
         if (heroSection) {
@@ -252,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // --- Grid Items Micro-Parallax ---
         // Strictly Y-axis, odd/even speed differences
         gridItems.forEach((item, index) => {
-            const speed = (index % 2 === 0) ? 0.05 : 0.1;
+            const speed = (index % 2 === 0) ? 0.05 : 0.08;
             const itemRect = item.getBoundingClientRect();
             // Calculate distance from center of viewport
             const distFromCenter = (itemRect.top + (itemRect.height/2)) - (window.innerHeight/2);
@@ -265,6 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
 
 
 

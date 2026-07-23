@@ -2095,12 +2095,15 @@ html.lenis, html.lenis body {
 .gallery-grid .grid-item,
 .quotes-masonry-grid .quote-item {
     --parallax-y: 0px;
+    --scroll-stretch: 1;
     translate: 0px var(--parallax-y);
     transform: translateY(40px);
+    scale: 1 var(--scroll-stretch);
     opacity: 0;
     transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), 
                 transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
-                scale 0.4s ease, filter 0.4s ease !important;
+                scale 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                filter 0.4s ease !important;
     will-change: transform, translate, opacity, scale;
     transform-origin: center center;
     position: relative; /* For z-index to work */
@@ -2120,7 +2123,7 @@ html.lenis, html.lenis body {
 }
 .gallery-grid .grid-item:hover,
 .quotes-masonry-grid .quote-item:hover {
-    scale: 1.02;
+    --scroll-stretch: 1.02;
+    scale: 1.02 1.02;
     z-index: 10;
 }
-
