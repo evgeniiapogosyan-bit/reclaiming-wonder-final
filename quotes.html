@@ -296,7 +296,77 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </body>
+
+<style>
+/* ─── Floating Animation Base ─────────────────────────────────────────────── */
+/* Each .quote-item gets a unique animation injected by JS.
+   Hover freezes the element in place with a smooth ease-in-out transition.   */
+
+.quote-item {
+    /* Smooth resume / freeze when cursor enters or leaves */
+    transition: animation-play-state 0s, transform 0.6s ease-in-out;
+    will-change: transform;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+.quote-item:hover {
+    /* Freeze floating exactly where it stopped */
+    animation-play-state: paused !important;
+}
+</style>
+
+<script>
+/* ─── Zero-Gravity Float System ──────────────────────────────────────────── */
+(function () {
+    'use strict';
+
+    // Returns a random float between min and max (inclusive of sign)
+    function rand(min, max) {
+        return +(Math.random() * (max - min) + min).toFixed(3);
+    }
+
+    // Pick a random value from an array
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    var items = document.querySelectorAll('.quote-item');
+    var styleSheet = document.createElement('style');
+    document.head.appendChild(styleSheet);
+
+    items.forEach(function (item, i) {
+        var name = 'quoteFloat' + i;
+
+        // Each card gets its own organic drift path — 4 waypoints
+        // X: ±4–10px   Y: ±5–12px   Rotate: ±0.4–1.2deg
+        var x1 = rand(-10,  10), y1 = rand(-12,  12), r1 = rand(-1.2, 1.2);
+        var x2 = rand(-8,    8), y2 = rand(-10,  10), r2 = rand(-0.8, 0.8);
+        var x3 = rand(-10,  10), y3 = rand(-12,  12), r3 = rand(-1.2, 1.2);
+
+        var keyframes = [
+            '@keyframes ' + name + ' {',
+            '  0%   { transform: translate(0px, 0px) rotate(0deg); }',
+            '  33%  { transform: translate(' + x1 + 'px, ' + y1 + 'px) rotate(' + r1 + 'deg); }',
+            '  66%  { transform: translate(' + x2 + 'px, ' + y2 + 'px) rotate(' + r2 + 'deg); }',
+            '  100% { transform: translate(' + x3 + 'px, ' + y3 + 'px) rotate(' + r3 + 'deg); }',
+            '}'
+        ].join('\n');
+
+        styleSheet.sheet.insertRule(keyframes, styleSheet.sheet.cssRules.length);
+
+        // Duration 9–15s, stagger delay 0–6s so no two cards sync
+        var duration = rand(9, 15).toFixed(1) + 's';
+        var delay    = rand(0, 6).toFixed(2) + 's';
+
+        item.style.animationName     = name;
+        item.style.animationDuration = duration;
+        item.style.animationDelay    = '-' + delay; // negative = start mid-cycle for instant motion
+    });
+}());
+</script>
 </html>
+
 
 
 
