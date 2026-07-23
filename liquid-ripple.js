@@ -6,7 +6,6 @@
         varying vec2 v_uv;
         void main() {
             v_uv = a_position * 0.5 + 0.5;
-            v_uv.y = 1.0 - v_uv.y; // Flip Y for WebGL
             gl_Position = vec4(a_position, 0.0, 1.0);
         }
     `;
@@ -114,15 +113,24 @@
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         
-        // Wait for image to load before binding texture
-        if (img.complete && img.naturalWidth !== 0) {
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-        } else {
-            img.addEventListener('load', () => {
-                gl.bindTexture(gl.TEXTURE_2D, texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-            });
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        
+        let textureLoaded = false;
+        function updateTexture() {
+            if (textureLoaded) return;
+            if (img.naturalWidth > 0) {
+                try {
+                    gl.bindTexture(gl.TEXTURE_2D, texture);
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+                    textureLoaded = true;
+                } catch (e) {
+                    console.error('WebGL texture error:', e);
+                }
+            }
         }
+        
+        img.addEventListener('load', updateTexture);
+        updateTexture();
 
         // State
         let mouseX = 0.5, mouseY = 0.5;
@@ -150,15 +158,22 @@
         resize(); // initial size
 
         function render() {
+            updateTexture(); // Check if lazy image loaded
+            
             const time = (performance.now() - startTime) / 1000;
             
             // Smoothly interpolate hover state for seamless transition
             currentHover += (targetHover - currentHover) * 0.1;
             
-            gl.uniform1f(uTimeLoc, time);
-            gl.uniform1f(uHoverLoc, currentHover);
-            
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            if (textureLoaded) {
+                gl.clearColor(0.0, 0.0, 0.0, 0.0);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                
+                gl.uniform1f(uTimeLoc, time);
+                gl.uniform1f(uHoverLoc, currentHover);
+                
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+            }
             
             // Only continue rendering if the effect is active or fading out
             if (currentHover > 0.01 || targetHover > 0) {
