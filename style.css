@@ -1968,6 +1968,7 @@ body {
     box-shadow: none;
     padding: 0;
 }
+    will-change: transform;
 .quote-item p {
     margin: 0 0 16px 0;
     line-height: 1.5;
@@ -2050,3 +2051,45 @@ body {
     .style-serif-large p { font-size: 32px; }
     .style-serif-italic p { font-size: 28px; }
 }
+
+/* === Scroll Architecture Overrides === */
+section.hero-section#hero {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1 !important;
+}
+
+.content-curtain {
+    position: relative;
+    z-index: 10;
+    margin-top: 100vh;
+    background-color: #050508; /* Dark curtain background */
+    width: 100%;
+}
+
+/* Remove transition on grid-item transform to prevent parallax stutter */
+.gallery-grid .grid-item {
+    transition: opacity 0.4s ease, box-shadow 0.3s ease !important; /* Exclude transform */
+    will-change: transform; /* Hint for performance */
+}
+
+/* Lenis recommended base CSS */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+

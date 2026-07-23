@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="style.css">
     <!-- Fabric.js — interactive canvas library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <!-- Lenis for smooth scroll -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
 </head>
 <body>
 
@@ -57,7 +59,7 @@
         </defs>
     </svg>
 
-    <main class="scroll-container">
+    <main class="scroll-container content-curtain">
         <!-- Hero Section -->
         <section id="hero" class="section hero-section">
     <!-- Dynamic Background Video Switcher -->
@@ -1965,6 +1967,73 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<script>
+// Scroll Animation Architecture
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Initialize Lenis
+    const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+        mouseMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false,
+    });
+
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // 2. DOM Elements
+    const heroSection = document.getElementById('hero');
+    const heroContent = document.querySelector('.hero-content');
+    const heroBgWrapper = document.querySelector('.hero-bg-video-wrapper');
+    const gridItems = document.querySelectorAll('.gallery-grid .grid-item');
+    
+    // 3. Scroll Listener
+    lenis.on('scroll', (e) => {
+        const scrollY = window.scrollY;
+        const heroHeight = heroSection.offsetHeight;
+        
+        // --- Hero Scale & Fade Effects ---
+        if (scrollY <= heroHeight) {
+            // Calculate progress 0 to 1
+            const progress = scrollY / heroHeight;
+            
+            // Scale text (1 to 0.95)
+            const scale = 1 - (progress * 0.05);
+            heroContent.style.transform = scale( + scale + );
+            
+            // Fade video wrapper opacity (1 to 0.3)
+            const videoOpacity = 1 - (progress * 0.7);
+            heroBgWrapper.style.opacity = videoOpacity;
+            
+            // Blur video (0px to 8px)
+            const blurAmt = progress * 8;
+            heroBgWrapper.style.filter = lur( + blurAmt + px);
+        }
+
+        // --- Grid Items Micro-Parallax ---
+        // We only calculate if they are somewhat near viewport to save performance,
+        // but simplest is just apply to all for now.
+        gridItems.forEach((item, index) => {
+            // Alternating speeds based on column (assuming masonry flow)
+            // Or just odd/even index
+            const speed = (index % 2 === 0) ? 0.05 : 0.1;
+            const itemRect = item.getBoundingClientRect();
+            // Calculate relative to viewport center
+            const distFromCenter = (itemRect.top + (itemRect.height/2)) - (window.innerHeight/2);
+            const yOffset = distFromCenter * speed;
+            item.style.transform = 	ranslateY( + yOffset + px);
+        });
+    });
+});
+</script>
 </body>
 <script>
 (function () {
@@ -3472,6 +3541,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
