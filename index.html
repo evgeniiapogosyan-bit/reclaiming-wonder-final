@@ -1789,6 +1789,52 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<script>
+// Gallery Filter Logic
+document.addEventListener('DOMContentLoaded', function() {
+    var galleryFilterBtns = document.querySelectorAll('.gallery-controls-wrapper .filter-btn');
+    var galleryItems = document.querySelectorAll('.gallery-grid .grid-item');
+    
+    if (galleryFilterBtns.length > 0 && galleryItems.length > 0) {
+        galleryFilterBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                // Update active state
+                galleryFilterBtns.forEach(function(b) { b.classList.remove('active'); });
+                this.classList.add('active');
+                
+                var filterVal = this.getAttribute('data-filter');
+                
+                galleryItems.forEach(function(item) {
+                    var cat = item.getAttribute('data-category');
+                    
+                    // Reset transitions
+                    item.style.transition = 'none';
+                    
+                    if (filterVal === 'all' || filterVal === cat) {
+                        item.style.display = 'block'; 
+                        
+                        // Set up for animation
+                        item.style.opacity = '0';
+                        item.style.transform = 'scale(0.9)';
+                        
+                        // Force reflow
+                        void item.offsetWidth;
+                        
+                        // Trigger animation
+                        item.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                        item.style.opacity = '1';
+                        item.style.transform = 'scale(1)';
+                    } else {
+                        item.style.display = 'none';
+                        item.style.opacity = '0';
+                        item.style.transform = 'scale(0.9)';
+                    }
+                });
+            });
+        });
+    }
+});
+</script>
 </body>
 <script>
 (function () {
@@ -3296,6 +3342,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
