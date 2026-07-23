@@ -1611,3 +1611,77 @@ body {
 
 
 
+
+/* ==========================================================================
+   Fragments of Thought (Pinterest Masonry Layout)
+   ========================================================================== */
+.thoughts-section {
+    padding: 120px 20px 140px;
+    background-color: #08080a;
+}
+
+.thoughts-title {
+    color: #eaeaea;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    margin-bottom: 70px;
+    letter-spacing: 0.12em;
+    font-weight: 400;
+}
+
+.thoughts-masonry {
+    column-count: 3;
+    column-gap: 3.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Responsive Columns */
+@media (max-width: 992px) {
+    .thoughts-masonry {
+        column-count: 2;
+        column-gap: 2.5rem;
+    }
+}
+@media (max-width: 600px) {
+    .thoughts-masonry {
+        column-count: 1;
+        column-gap: 0;
+    }
+}
+
+.thought-fragment {
+    break-inside: avoid;
+    margin-bottom: 3.5rem;
+    padding: 0 10px;
+}
+
+.thought-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    line-height: 1.65;
+    color: #eaeaea;
+    margin-bottom: 18px;
+    font-weight: 400;
+}
+
+/* Organic sizing to create visual rhythm */
+.thought-fragment:nth-child(even) .thought-quote {
+    font-size: 1.7rem;
+    line-height: 1.5;
+}
+
+.thought-fragment:nth-child(3n) .thought-quote {
+    font-size: 1.25rem;
+    font-style: italic;
+}
+
+.thought-author {
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgba(234, 234, 234, 0.45);
+    font-weight: 600;
+}
