@@ -152,15 +152,18 @@
             </div>
         </section>
 
-        <!-- Floating Leaf Section -->
+        <!-- ============================================================
+             Floating Leaf Section
+             Dark water background + animated leaf drifting horizontally
+        ============================================================ -->
         <section id="leaf-section" class="section water-container">
 
-            <!-- z-index: 1 · Water background — SVG displacement filter applied HERE ONLY -->
-            <div class="water-bg" aria-hidden="true"></div>
+            <!-- LAYER 1: Water photo background with slow pan/scale animation -->
+            <div class="water-bg" aria-hidden="true">
+                <div class="water-bg__img"></div>
+            </div>
 
-            <!-- z-index: 5 · Radial vignette handled by .water-container::before in CSS -->
-
-            <!-- z-index: 6 · Dust mote particles — floating reflections above vignette -->
+            <!-- LAYER 2: Dust mote particles floating above water -->
             <div class="water-particles" aria-hidden="true">
                 <span class="mote mote-1"></span>
                 <span class="mote mote-2"></span>
@@ -170,16 +173,14 @@
                 <span class="mote mote-6"></span>
             </div>
 
-            <!-- z-index: 10 · Floating leaf — sibling, inherits NO filter from water-bg -->
+            <!-- LAYER 3: Floating leaf drifting across the water surface -->
             <div class="leaf-container">
-                <!-- .leaf-drifter: owns the infinite drift animation (position + translateY + rotate) -->
-                <!-- .floating-leaf (img): owns ONLY the hover interaction transform -->
                 <div class="leaf-drifter">
                     <img src="Nesproject/leaf.png" alt="Floating Leaf" class="floating-leaf" loading="lazy">
                 </div>
             </div>
 
-            <!-- z-index: 15 · Leaf content overlay -->
+            <!-- LAYER 4: Text overlay -->
             <div class="leaf-content">
                 <h2>The weight of a single moment</h2>
                 <p>Caught in the current of time, resting on the surface tension of memory.</p>
