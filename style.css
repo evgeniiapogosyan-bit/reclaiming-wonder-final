@@ -1070,7 +1070,8 @@ body {
 /* 35mm Film Container with Perforated Sprocket Holes */
 .film-container {
     width: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    white-space: nowrap;
     background: #0d0d0f;
     padding: 40px 0;
     position: relative;
@@ -1107,6 +1108,7 @@ body {
 /* Infinite Marquee Strip */
 .film-strip {
     display: flex;
+    flex-wrap: nowrap;
     gap: 24px;
     width: max-content;
     animation: filmMarquee 38s linear infinite;
@@ -1685,3 +1687,4 @@ body {
     color: rgba(234, 234, 234, 0.45);
     font-weight: 600;
 }
+
