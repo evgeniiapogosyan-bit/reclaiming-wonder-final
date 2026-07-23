@@ -972,6 +972,11 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: filter 0.5s ease-in-out;
+}
+
+.grid-item:hover img {
+    filter: blur(6px);
 }
 
 /* ── Pending workshop slots (arrive July 27) ── */
