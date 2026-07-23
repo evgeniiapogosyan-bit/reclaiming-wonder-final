@@ -2273,3 +2273,50 @@ html.lenis, html.lenis body {
     transition: width 0.1s linear;
 }
 
+
+/* Holographic Media Frame */
+.faw-hologram {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #0a0a0f, #000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.holo-aura {
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    background: conic-gradient(from 0deg, rgba(80, 20, 200, 0.4), rgba(20, 200, 180, 0.4), rgba(200, 20, 100, 0.4), rgba(80, 20, 200, 0.4));
+    animation: holoSpin 12s linear infinite, holoPulse 6s ease-in-out infinite alternate;
+    filter: blur(25px);
+}
+
+.holo-core {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(150, 220, 255, 0.8), rgba(220, 100, 255, 0.6), transparent 70%);
+    box-shadow: 0 0 25px rgba(150, 220, 255, 0.6), inset 0 0 15px rgba(255,255,255,0.8);
+    animation: holoFloat 4s ease-in-out infinite alternate, holoHue 10s linear infinite;
+    z-index: 2;
+}
+
+@keyframes holoSpin { 
+    100% { transform: rotate(360deg); } 
+}
+@keyframes holoPulse { 
+    0% { transform: scale(0.8); opacity: 0.5; } 
+    100% { transform: scale(1.2); opacity: 1; } 
+}
+@keyframes holoFloat { 
+    0% { transform: translateY(-8px) scale(0.95); } 
+    100% { transform: translateY(8px) scale(1.05); } 
+}
+@keyframes holoHue { 
+    100% { filter: hue-rotate(360deg); } 
+}
