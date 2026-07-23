@@ -618,13 +618,13 @@ body {
 }
 
 .mkt-item:hover {
-    transform: translateY(-5px) scale(1.03);
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(240, 232, 216, 0.28);
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.075);
+    border-color: rgba(201, 162, 39, 0.45);
     box-shadow:
-        0 12px 36px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(240, 232, 216, 0.15) inset,
-        0 0 24px rgba(200, 185, 150, 0.12);
+        0 8px 24px rgba(0, 0, 0, 0.5),
+        0 0 18px rgba(201, 162, 39, 0.18),
+        0 0 0 1px rgba(201, 162, 39, 0.25) inset;
 }
 
 .mkt-item::after {
@@ -679,12 +679,12 @@ body {
 
 /* Label */
 .mkt-label {
-    font-family: var(--font-serif);
-    font-size: 0.72rem;
-    font-weight: 400;
-    font-style: italic;
-    letter-spacing: 0.03em;
-    color: rgba(240, 232, 216, 0.65);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    font-style: normal;
+    letter-spacing: 0.02em;
+    color: #c5c5c5;
     text-align: center;
     line-height: 1.3;
     pointer-events: none;
@@ -692,7 +692,7 @@ body {
 }
 
 .mkt-item:hover .mkt-label {
-    color: rgba(240, 232, 216, 0.95);
+    color: #ffffff;
 }
 
 /* Responsive */
@@ -1501,6 +1501,7 @@ body {
     font-size: 1.4rem;
     color: #fff;
 }
+
 
 
 

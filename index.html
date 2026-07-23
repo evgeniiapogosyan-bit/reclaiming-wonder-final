@@ -2215,7 +2215,7 @@
     }
 
     /* ── Event delegation — marketplace (card clicks) ────────────── */
-        /* ── Marketplace Filter Tabs ── */
+            /* ── Marketplace Filter Tabs ── */
     var mktTabs = document.querySelectorAll('.mkt-tab');
     var mktItems = document.querySelectorAll('.mkt-item');
     if (mktTabs.length && mktItems.length) {
@@ -2224,10 +2224,18 @@
                 mktTabs.forEach(function (t) { t.classList.remove('active'); });
                 tab.classList.add('active');
                 var filter = tab.getAttribute('data-mkt-filter');
+
                 mktItems.forEach(function (item) {
                     var cat = item.getAttribute('data-category');
                     if (filter === 'all' || cat === filter) {
                         item.style.display = 'flex';
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateY(8px)';
+                        requestAnimationFrame(function() {
+                            item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                            item.style.opacity = '1';
+                            item.style.transform = 'none';
+                        });
                     } else {
                         item.style.display = 'none';
                     }
@@ -3055,6 +3063,7 @@
     }());
 </script>
 </html>
+
 
 
 
