@@ -1945,8 +1945,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-    <!-- Hidden Audio Element -->
-    <audio id="ambient-audio" src="./audio/fratres.mp3" loop crossorigin="anonymous" style="display: none;"></audio>
     <!-- Floating Audio Widget -->
         <div id="faw-widget" class="faw-widget">
         <div class="faw-header">
@@ -1976,66 +1974,65 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 <script>
-// Premium Floating Audio Widget Logic (Crash-Free CSS Hologram)
-document.addEventListener('DOMContentLoaded', function() {
-    var apPlay = document.getElementById('play-toggle-btn');
-    var apProgress = document.getElementById('faw-progress-bar');
-    var apToggle = document.getElementById('faw-toggle');
-    var apWidget = document.getElementById('faw-widget');
+// Floating Audio Widget — uses new Audio() to avoid CORS/file:// issues
+(function() {
+    var playSvg  = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    var pauseSvg = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
 
-    const playSvg = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-    const pauseSvg = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+    // Dynamically create audio object — avoids HTML audio tag and CORS file:// issues
+    var bgAudio = new Audio('./audio/fratres.mp3');
+    bgAudio.loop = true;
 
-    if (apPlay) {
-        const audio = document.getElementById('ambient-audio');
+    function initWidget() {
+        var btn      = document.getElementById('play-toggle-btn');
+        var progress = document.getElementById('faw-progress-bar');
+        var toggle   = document.getElementById('faw-toggle');
+        var widget   = document.getElementById('faw-widget');
 
-        function togglePlay() {
-            console.log("Button clicked");
-            if (audio.paused) {
-                var playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        console.log("Audio playing");
-                        apPlay.innerHTML = pauseSvg;
-                    }).catch((error) => {
-                        console.error("Audio play failed:", error);
-                    });
-                }
-            } else {
-                audio.pause();
-                console.log("Audio paused");
-                apPlay.innerHTML = playSvg;
-            }
+        if (!btn) {
+            console.error('play-toggle-btn not found in DOM');
+            return;
         }
 
-        apPlay.addEventListener('click', togglePlay);
-
-        audio.addEventListener('play', function() { apPlay.innerHTML = pauseSvg; });
-        audio.addEventListener('pause', function() { apPlay.innerHTML = playSvg; });
-        audio.addEventListener('timeupdate', function() {
-            if (audio.duration) {
-                const percent = (audio.currentTime / audio.duration) * 100;
-                if(apProgress) apProgress.style.width = percent + '%';
-            }
-        });
-    } else {
-        console.error("FAW-PLAY button not found in DOM");
-    }
-
-    if (apToggle && apWidget) {
-        // Minimize toggle
-        apToggle.addEventListener('click', function() {
-            apWidget.classList.toggle('minimized');
-            if (apWidget.classList.contains('minimized')) {
-                apToggle.innerHTML = '( + )';
+        btn.addEventListener('click', function() {
+            console.log('Button clicked');
+            if (bgAudio.paused) {
+                bgAudio.play().then(function() {
+                    console.log('Audio playing');
+                    btn.innerHTML = pauseSvg;
+                }).catch(function(error) {
+                    console.error('Audio play failed:', error);
+                });
             } else {
-                apToggle.innerHTML = '( &ndash; )';
+                bgAudio.pause();
+                console.log('Audio paused');
+                btn.innerHTML = playSvg;
             }
         });
+
+        bgAudio.addEventListener('play',  function() { btn.innerHTML = pauseSvg; });
+        bgAudio.addEventListener('pause', function() { btn.innerHTML = playSvg;  });
+        bgAudio.addEventListener('timeupdate', function() {
+            if (bgAudio.duration && progress) {
+                progress.style.width = ((bgAudio.currentTime / bgAudio.duration) * 100) + '%';
+            }
+        });
+
+        if (toggle && widget) {
+            toggle.addEventListener('click', function() {
+                widget.classList.toggle('minimized');
+                toggle.innerHTML = widget.classList.contains('minimized') ? '( + )' : '( &ndash; )';
+            });
+        }
     }
-});
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initWidget);
+    } else {
+        initWidget();
+    }
+}());
 </script>
-</body>
 <script>
 (function () {
     'use strict';

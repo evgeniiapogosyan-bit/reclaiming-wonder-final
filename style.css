@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    Base resets & variables
    ========================================================================== */
 *, *::before, *::after {
@@ -2145,7 +2145,7 @@ html.lenis, html.lenis body {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 1000;
+    z-index: 99999;
     width: 260px;
     background: rgba(10, 10, 15, 0.65);
     backdrop-filter: blur(16px);
@@ -2158,6 +2158,7 @@ html.lenis, html.lenis body {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    pointer-events: auto;
 }
 
 .faw-header {
@@ -2255,6 +2256,9 @@ html.lenis, html.lenis body {
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 4px;
+    pointer-events: auto;
+    position: relative;
+    z-index: 99999;
 }
 
 .faw-btn:hover {
