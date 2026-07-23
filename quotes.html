@@ -209,21 +209,61 @@ document.addEventListener('DOMContentLoaded', function() {
     requestAnimationFrame(raf);
 
     // 2. DOM Elements
-    const gridItems = document.querySelectorAll('.quote-item');
+    const heroSection = document.getElementById('hero');
+    const heroContent = document.querySelector('.hero-content');
+    const heroBgWrapper = document.querySelector('.hero-bg-video-wrapper');
+    const gridItems = document.querySelectorAll('.gallery-grid .grid-item, .quotes-masonry-grid .quote-item');
     
-    // 3. Scroll Listener
+    // 3. Fade-In & Lift Intersection Observer
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                // We keep observing if we want it to un-reveal, but usually premium sites just reveal once.
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: "0px 0px -100px 0px" });
+
+    gridItems.forEach(item => {
+        revealObserver.observe(item);
+    });
+
+    // 4. Scroll Listener
     lenis.on('scroll', (e) => {
+        const scrollY = window.scrollY;
+        
+        // --- Hero Scale & Fade Effects ---
+        if (heroSection) {
+            const heroHeight = heroSection.offsetHeight;
+            if (scrollY <= heroHeight) {
+                const progress = scrollY / heroHeight;
+                const scale = 1 - (progress * 0.05);
+                if(heroContent) heroContent.style.transform = "scale(" + scale + ")";
+                
+                const videoOpacity = 1 - (progress * 0.7);
+                if(heroBgWrapper) heroBgWrapper.style.opacity = videoOpacity;
+                
+                const blurAmt = progress * 8;
+                if(heroBgWrapper) heroBgWrapper.style.filter = "blur(" + blurAmt + "px)";
+            }
+        }
+
         // --- Grid Items Micro-Parallax ---
+        // Strictly Y-axis, odd/even speed differences
         gridItems.forEach((item, index) => {
             const speed = (index % 2 === 0) ? 0.05 : 0.1;
             const itemRect = item.getBoundingClientRect();
+            // Calculate distance from center of viewport
             const distFromCenter = (itemRect.top + (itemRect.height/2)) - (window.innerHeight/2);
             const yOffset = distFromCenter * speed;
-            item.style.transform = 	ranslateY( + yOffset + px);
+            // Use CSS custom property for translation to avoid transition conflicts
+            item.style.setProperty('--parallax-y', yOffset + 'px');
         });
     });
 });
 </script>
 </body>
 </html>
+
 

@@ -1994,43 +1994,53 @@ document.addEventListener('DOMContentLoaded', function() {
     const heroSection = document.getElementById('hero');
     const heroContent = document.querySelector('.hero-content');
     const heroBgWrapper = document.querySelector('.hero-bg-video-wrapper');
-    const gridItems = document.querySelectorAll('.gallery-grid .grid-item');
+    const gridItems = document.querySelectorAll('.gallery-grid .grid-item, .quotes-masonry-grid .quote-item');
     
-    // 3. Scroll Listener
+    // 3. Fade-In & Lift Intersection Observer
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                // We keep observing if we want it to un-reveal, but usually premium sites just reveal once.
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: "0px 0px -100px 0px" });
+
+    gridItems.forEach(item => {
+        revealObserver.observe(item);
+    });
+
+    // 4. Scroll Listener
     lenis.on('scroll', (e) => {
         const scrollY = window.scrollY;
-        const heroHeight = heroSection.offsetHeight;
         
         // --- Hero Scale & Fade Effects ---
-        if (scrollY <= heroHeight) {
-            // Calculate progress 0 to 1
-            const progress = scrollY / heroHeight;
-            
-            // Scale text (1 to 0.95)
-            const scale = 1 - (progress * 0.05);
-            heroContent.style.transform = scale( + scale + );
-            
-            // Fade video wrapper opacity (1 to 0.3)
-            const videoOpacity = 1 - (progress * 0.7);
-            heroBgWrapper.style.opacity = videoOpacity;
-            
-            // Blur video (0px to 8px)
-            const blurAmt = progress * 8;
-            heroBgWrapper.style.filter = lur( + blurAmt + px);
+        if (heroSection) {
+            const heroHeight = heroSection.offsetHeight;
+            if (scrollY <= heroHeight) {
+                const progress = scrollY / heroHeight;
+                const scale = 1 - (progress * 0.05);
+                if(heroContent) heroContent.style.transform = "scale(" + scale + ")";
+                
+                const videoOpacity = 1 - (progress * 0.7);
+                if(heroBgWrapper) heroBgWrapper.style.opacity = videoOpacity;
+                
+                const blurAmt = progress * 8;
+                if(heroBgWrapper) heroBgWrapper.style.filter = "blur(" + blurAmt + "px)";
+            }
         }
 
         // --- Grid Items Micro-Parallax ---
-        // We only calculate if they are somewhat near viewport to save performance,
-        // but simplest is just apply to all for now.
+        // Strictly Y-axis, odd/even speed differences
         gridItems.forEach((item, index) => {
-            // Alternating speeds based on column (assuming masonry flow)
-            // Or just odd/even index
             const speed = (index % 2 === 0) ? 0.05 : 0.1;
             const itemRect = item.getBoundingClientRect();
-            // Calculate relative to viewport center
+            // Calculate distance from center of viewport
             const distFromCenter = (itemRect.top + (itemRect.height/2)) - (window.innerHeight/2);
             const yOffset = distFromCenter * speed;
-            item.style.transform = 	ranslateY( + yOffset + px);
+            // Use CSS custom property for translation to avoid transition conflicts
+            item.style.setProperty('--parallax-y', yOffset + 'px');
         });
     });
 });
@@ -3542,6 +3552,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
