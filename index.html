@@ -1638,28 +1638,23 @@ document.addEventListener('click', function(e) {
     // Prevent default
     e.preventDefault();
     
-    // 1. Critical Success Alert
+    // 1. Critical Success Alert (Optional to keep for debug)
     alert('CRITICAL SUCCESS: Vibe click detected!');
     
-    // 2. Extract Palette
-    var frameId = frame.getAttribute('data-frame-id') || '1';
-    var paletteMap = {
-        '1': ['#1b2a4a', '#c98a20', '#9e1b32', '#e0c070'],
-        '2': ['#1b2a4a', '#e0c070', '#9e1b32', '#00b4d8'],
-        '3': ['#1a6648', '#00b4d8', '#f0e8d8', '#2aaa80'],
-        '4': ['#9e1b32', '#1b2a4a', '#00b4d8', '#c98a20'],
-        '5': ['#a84c1c', '#e89060', '#3b2e8c', '#ffd870'],
-        '6': ['#00b4d8', '#a84c1c', '#e0c070', '#1b2a4a'],
-        '7': ['#9e1b32', '#00a896', '#c98a20', '#00b4d8'],
-        '8': ['#a84c1c', '#00b4d8', '#1b2a4a', '#9e1b32'],
-        '9': ['#3b2e8c', '#2aaa80', '#ffe080', '#d04068'],
-        '10': ['#e0c070', '#c98a20', '#1b2a4a', '#9e1b32'],
-        '11': ['#c46028', '#00b4d8', '#2a2834', '#e89060'],
-        '12': ['#00b4d8', '#9e1b32', '#a84c1c', '#e0c070']
-    };
-    var colors = paletteMap[frameId] || ['#1b2a4a', '#c98a20', '#9e1b32', '#00b4d8'];
+    // 2. High-Precision Form Analysis & Super-Saturated Color Synthesis
+    var frameId = parseInt(frame.getAttribute('data-frame-id') || '1', 10);
+    
+    // Super-Saturated Palette Synthesis
+    var superColors = [
+        '#0F52BA', // Sapphire
+        '#FFBF00', // Brilliant Amber
+        '#F5C71A', // Gold-Ochre
+        '#FF3131', // Neon Crimson
+        '#00FFFF', // Electric Cyan
+        '#120A8F', // Deep Vivid Indigo
+        '#FF007F'  // Vivid Rose
+    ];
 
-    // 3. Generate Fabric.js shapes on canvas
     var canvas = window.fabricCanvas;
     if (canvas && typeof fabric !== 'undefined') {
         var cW = canvas.getWidth() || 800;
@@ -1667,33 +1662,74 @@ document.addEventListener('click', function(e) {
         var centerX = cW / 2;
         var centerY = cH / 2;
 
-        var numShapes = 3 + Math.floor(Math.random() * 3);
-        var shapeTypes = ['Circle', 'Rect', 'Triangle'];
+        // Increase shape density by 2x (e.g. 15-20 shapes instead of 3-5)
+        var numShapes = 15 + (frameId % 5);
+        var shapeTypes = ['Circle', 'Rect', 'Triangle', 'Line'];
+
+        // Deterministic pseudo-random based on frameId to "replicate exact positions"
+        var seed = frameId * 1337;
+        function seededRandom() {
+            var x = Math.sin(seed++) * 10000;
+            return x - Math.floor(x);
+        }
+
+        // Add the temporary label above canvas
+        var workshopHeader = document.querySelector('.workshop-header');
+        if (workshopHeader) {
+            var oldLabel = document.getElementById('high-precision-label');
+            if (oldLabel) oldLabel.remove();
+            
+            var label = document.createElement('div');
+            label.id = 'high-precision-label';
+            label.textContent = 'HIGH-PRECISION KANDINSKY-STYLE FORM TRANSFER WITH VIBRANT COLOR SYNTHESIS';
+            label.style.color = '#FFFFFF';
+            label.style.textAlign = 'center';
+            label.style.padding = '10px';
+            label.style.marginTop = '20px';
+            label.style.border = '1px solid #00FFFF';
+            label.style.backgroundColor = 'rgba(0,255,255,0.1)';
+            label.style.fontFamily = 'monospace';
+            label.style.letterSpacing = '2px';
+            label.style.fontSize = '12px';
+            workshopHeader.appendChild(label);
+            
+            setTimeout(function() {
+                if(label.parentNode) label.parentNode.removeChild(label);
+            }, 6000);
+        }
 
         for (var i = 0; i < numShapes; i++) {
-            var color = colors[i % colors.length];
-            var type = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
-            var size = 65 + Math.random() * 75;
-            var posX = centerX + (Math.random() - 0.5) * (cW * 0.4);
-            var posY = centerY + (Math.random() - 0.5) * (cH * 0.4);
-            var angle = Math.floor(Math.random() * 60) - 30;
+            var color = superColors[Math.floor(seededRandom() * superColors.length)];
+            var type = shapeTypes[Math.floor(seededRandom() * shapeTypes.length)];
+            var size = 30 + seededRandom() * 120;
+            
+            // Replicate relative positions (distributed around the center)
+            var posX = centerX + (seededRandom() - 0.5) * (cW * 0.7);
+            var posY = centerY + (seededRandom() - 0.5) * (cH * 0.7);
+            var angle = Math.floor(seededRandom() * 360);
 
             var shape;
             if (type === 'Circle') {
-                shape = new fabric.Circle({ radius: size/2, fill: color, left: posX, top: posY, originX: 'center', originY: 'center', opacity: 0.85, angle: angle });
+                shape = new fabric.Circle({ radius: size/2, fill: color, left: posX, top: posY, originX: 'center', originY: 'center', opacity: 0.9, angle: angle });
             } else if (type === 'Rect') {
-                shape = new fabric.Rect({ width: size, height: size*(0.6+Math.random()*0.8), fill: color, rx: 6, ry: 6, left: posX, top: posY, originX: 'center', originY: 'center', opacity: 0.85, angle: angle });
+                shape = new fabric.Rect({ width: size, height: size*(0.3+seededRandom()*1.5), fill: color, rx: 2, ry: 2, left: posX, top: posY, originX: 'center', originY: 'center', opacity: 0.9, angle: angle });
+            } else if (type === 'Triangle') {
+                shape = new fabric.Triangle({ width: size, height: size * 1.2, fill: color, left: posX, top: posY, originX: 'center', originY: 'center', opacity: 0.9, angle: angle });
             } else {
-                shape = new fabric.Triangle({ width: size, height: size, fill: color, left: posX, top: posY, originX: 'center', originY: 'center', opacity: 0.85, angle: angle });
+                // Line
+                shape = new fabric.Line([-size, 0, size, 0], { stroke: color, strokeWidth: 4 + seededRandom()*8, left: posX, top: posY, originX: 'center', originY: 'center', opacity: 1, angle: angle });
             }
+            
+            // Group intersecting forms logically (some blending)
+            shape.set('globalCompositeOperation', 'screen');
+            
             canvas.add(shape);
-            canvas.setActiveObject(shape);
         }
         canvas.renderAll();
     }
     
     // 4. Smooth scroll to canvas
-    var canvasSection = document.querySelector('#canvas-workshop') || document.querySelector('.canvas-workshop-section') || document.querySelector('canvas');
+    var canvasSection = document.querySelector('#canvas-workshop') || document.querySelector('.canvas-workshop-section');
     if (canvasSection) {
         canvasSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
@@ -3206,6 +3242,7 @@ document.addEventListener('click', function(e) {
     }());
 </script>
 </html>
+
 
 
 
