@@ -227,13 +227,13 @@ body {
     object-fit: cover;
     border-radius: 2px;
     filter: grayscale(15%) contrast(105%);
-    transition: transform 0.8s var(--ease-out-expo), filter 0.8s var(--ease-out-expo);
+    transition: transform 0.8s var(--ease-out-expo), filter 0.5s ease-in-out !important;
     display: block;
 }
 
 .image-card:hover img {
     transform: scale(1.025);
-    filter: grayscale(0%) contrast(100%);
+    filter: blur(6px) !important;
 }
 
 .card-caption {
