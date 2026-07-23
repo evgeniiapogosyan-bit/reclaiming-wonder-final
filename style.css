@@ -2127,3 +2127,149 @@ html.lenis, html.lenis body {
     scale: 1.02 1.02;
     z-index: 10;
 }
+/* ==========================================================================
+   Floating Audio Widget (Bottom-Right)
+   ========================================================================== */
+.faw-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 260px;
+    background: rgba(10, 10, 15, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.faw-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faw-header-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.faw-toggle-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: monospace;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.3s ease;
+}
+
+.faw-toggle-btn:hover {
+    color: #fff;
+}
+
+.faw-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: max-height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease, margin 0.3s ease;
+    max-height: 400px;
+    opacity: 1;
+    overflow: hidden;
+}
+
+.faw-widget.minimized .faw-body {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.faw-media-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.faw-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.85);
+}
+
+.faw-info-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.faw-track-name {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #e0d8c8;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.faw-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.faw-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 4px;
+}
+
+.faw-btn:hover {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.faw-play-btn {
+    font-size: 1.4rem;
+    color: #fff;
+}
+
+.faw-progress-container {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.faw-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    border-radius: 2px;
+    transition: width 0.1s linear;
+}
+
