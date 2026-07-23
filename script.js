@@ -141,164 +141,175 @@ function initFilters() {
 /**
  * Initializes the film strip slider and modal functionality.
  */
-function initFilmStrip() {
-    const filmStrip = document.getElementById('film-strip');
-    const frames = document.querySelectorAll('.film-frame');
+/**
+ * Cinematic Roll - Deconstruct Frame to Fabric.js Canvas Workflow
+ */
+function extractFrameToCanvas(frameEl) {
+    if (!frameEl) return;
 
-    if (!filmStrip && !frames.length) return;
+    // 1. Debug log
+    console.log('Film frame clicked!', frameEl);
 
-    const paletteMap = {
-        '1': ['#1b2a4a', '#c98a20', '#9e1b32'],
-        '2': ['#1a6648', '#00b4d8', '#f0e8d8'],
-        '3': ['#a84c1c', '#e89060', '#3b2e8c'],
-        '4': ['#9e1b32', '#00a896', '#c98a20'],
-        '5': ['#3b2e8c', '#2aaa80', '#ffe080'],
-        '6': ['#c46028', '#00b4d8', '#2a2834']
+    // 2. CSS opacity flash (0.5 to 1 over 0.2s)
+    frameEl.style.transition = 'opacity 0.1s ease';
+    frameEl.style.opacity = '0.5';
+    setTimeout(function () {
+        frameEl.style.transition = 'opacity 0.2s ease';
+        frameEl.style.opacity = '1';
+    }, 100);
+
+    // 3. Extract palette colors
+    var frameId = frameEl.getAttribute('data-frame-id') || '1';
+    var paletteMap = {
+        '1': ['#1b2a4a', '#c98a20', '#9e1b32', '#e0c070'],
+        '2': ['#1a6648', '#00b4d8', '#f0e8d8', '#2aaa80'],
+        '3': ['#a84c1c', '#e89060', '#3b2e8c', '#ffd870'],
+        '4': ['#9e1b32', '#00a896', '#c98a20', '#00b4d8'],
+        '5': ['#3b2e8c', '#2aaa80', '#ffe080', '#d04068'],
+        '6': ['#c46028', '#00b4d8', '#2a2834', '#e89060']
     };
 
-    function handleFrameClick(e, frameEl) {
-        // Step 2: Log verification
-        console.log('Film frame clicked!');
+    var colors = paletteMap[frameId] || ['#1b2a4a', '#c98a20', '#9e1b32', '#00b4d8'];
 
-        // Step 6: Brief CSS opacity flash (0.5 to 1 over 0.2s)
-        const targetFrame = frameEl || e.currentTarget || e.target.closest('.film-frame');
-        if (targetFrame) {
-            targetFrame.style.transition = 'opacity 0.1s ease';
-            targetFrame.style.opacity = '0.5';
-            setTimeout(() => {
-                targetFrame.style.transition = 'opacity 0.2s ease';
-                targetFrame.style.opacity = '1';
-            }, 100);
-        }
+    // 4. Fabric.js Canvas - Generate 3 to 5 shapes & call canvas.renderAll()
+    var canvas = window.fabricCanvas;
 
-        const frameId = targetFrame ? (targetFrame.getAttribute('data-frame-id') || '1') : '1';
-        const frameNum = targetFrame ? (targetFrame.getAttribute('data-frame-num') || ('EXP 0' + frameId)) : 'EXP 01';
-        
-        // Step 3: 3-color palette representative of clicked image
-        const colors = paletteMap[frameId] || ['#1b2a4a', '#c98a20', '#9e1b32'];
+    if (canvas && typeof fabric !== 'undefined') {
+        var cW = canvas.getWidth() || 800;
+        var cH = canvas.getHeight() || 500;
+        var centerX = cW / 2;
+        var centerY = cH / 2;
 
-        // Step 4 & 5: Fabric.js Canvas Shape Generation & renderAll()
-        const canvas = window.fabricCanvas || (typeof fabricCanvas !== 'undefined' ? fabricCanvas : null);
+        var numShapes = 3 + Math.floor(Math.random() * 3); // 3, 4, or 5 shapes
+        var shapeTypes = ['Circle', 'Rect', 'Triangle'];
 
-        if (canvas && typeof fabric !== 'undefined') {
-            const cW = canvas.getWidth() || 800;
-            const cH = canvas.getHeight() || 500;
-            const centerX = cW / 2;
-            const centerY = cH / 2;
+        for (var i = 0; i < numShapes; i++) {
+            var color = colors[i % colors.length];
+            var type = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+            var size = 65 + Math.random() * 75;
+            var posX = centerX + (Math.random() - 0.5) * (cW * 0.4);
+            var posY = centerY + (Math.random() - 0.5) * (cH * 0.4);
+            var angle = Math.floor(Math.random() * 60) - 30;
 
-            const numShapes = 2 + Math.floor(Math.random() * 2); // 2 or 3 shapes
-            const shapeTypes = ['Circle', 'Rect', 'Triangle'];
-
-            for (let i = 0; i < numShapes; i++) {
-                const color = colors[i % colors.length];
-                const type = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
-                const size = 70 + Math.random() * 70;
-                
-                const posX = centerX + (Math.random() - 0.5) * (cW * 0.35);
-                const posY = centerY + (Math.random() - 0.5) * (cH * 0.35);
-                const angle = Math.floor(Math.random() * 50) - 25;
-
-                let shape;
-                if (type === 'Circle') {
-                    shape = new fabric.Circle({
-                        radius: size / 2,
-                        fill: color,
-                        left: posX,
-                        top: posY,
-                        originX: 'center',
-                        originY: 'center',
-                        opacity: 0.85,
-                        angle: angle
-                    });
-                } else if (type === 'Rect') {
-                    shape = new fabric.Rect({
-                        width: size,
-                        height: size * (0.6 + Math.random() * 0.8),
-                        fill: color,
-                        rx: 6,
-                        ry: 6,
-                        left: posX,
-                        top: posY,
-                        originX: 'center',
-                        originY: 'center',
-                        opacity: 0.85,
-                        angle: angle
-                    });
-                } else {
-                    shape = new fabric.Triangle({
-                        width: size,
-                        height: size,
-                        fill: color,
-                        left: posX,
-                        top: posY,
-                        originX: 'center',
-                        originY: 'center',
-                        opacity: 0.85,
-                        angle: angle
-                    });
-                }
-
-                shape._wsLabel = 'Film Frame Shape (' + color + ')';
-                canvas.add(shape);
-                canvas.setActiveObject(shape);
+            var shape;
+            if (type === 'Circle') {
+                shape = new fabric.Circle({
+                    radius: size / 2,
+                    fill: color,
+                    left: posX,
+                    top: posY,
+                    originX: 'center',
+                    originY: 'center',
+                    opacity: 0.85,
+                    angle: angle
+                });
+            } else if (type === 'Rect') {
+                shape = new fabric.Rect({
+                    width: size,
+                    height: size * (0.6 + Math.random() * 0.8),
+                    fill: color,
+                    rx: 6,
+                    ry: 6,
+                    left: posX,
+                    top: posY,
+                    originX: 'center',
+                    originY: 'center',
+                    opacity: 0.85,
+                    angle: angle
+                });
+            } else {
+                shape = new fabric.Triangle({
+                    width: size,
+                    height: size,
+                    fill: color,
+                    left: posX,
+                    top: posY,
+                    originX: 'center',
+                    originY: 'center',
+                    opacity: 0.85,
+                    angle: angle
+                });
             }
 
-            canvas.renderAll();
-
-            // Smooth scroll to canvas workshop
-            const ws = document.getElementById('canvas-workshop');
-            if (ws) ws.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-            console.warn('Fabric.js canvas instance not found on window.fabricCanvas');
+            shape._wsLabel = 'Film Shape (' + color + ')';
+            canvas.add(shape);
+            canvas.setActiveObject(shape);
         }
 
-        showFilmNotification('Inspiration extracted from Frame #' + frameId + ' (' + frameNum + ') to Canvas!');
+        canvas.renderAll();
+    } else {
+        console.warn('window.fabricCanvas not found yet');
     }
 
-    frames.forEach(frame => {
-        frame.addEventListener('click', (e) => handleFrameClick(e, frame));
-    });
+    // 5. Auto-Scroll IMMEDIATELY to Canvas Workshop container
+    var wsContainer = document.querySelector('#canvas-workshop') || document.getElementById('canvas-workshop');
+    if (wsContainer) {
+        wsContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // 6. Visual Toast Notification
+    showExtractToast('✨ Colors & shapes extracted to canvas!');
 }
 
-function showFilmNotification(msg) {
-    let notif = document.getElementById('film-notif');
-    if (!notif) {
-        notif = document.createElement('div');
-        notif.id = 'film-notif';
-        notif.style.cssText = [
+function showExtractToast(message) {
+    var toast = document.getElementById('extract-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'extract-toast';
+        toast.style.cssText = [
             'position:fixed',
-            'bottom:32px',
+            'top:24px',
             'left:50%',
-            'transform:translateX(-50%) translateY(20px)',
+            'transform:translateX(-50%) translateY(-20px)',
             'background:rgba(18, 18, 22, 0.95)',
             'border:1px solid rgba(201, 162, 39, 0.6)',
             'box-shadow:0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(201, 162, 39, 0.25)',
             'border-radius:999px',
-            'padding:12px 24px',
+            'padding:12px 28px',
             'color:#f0e8d8',
             'font-family:sans-serif',
-            'font-size:0.82rem',
-            'font-weight:500',
+            'font-size:0.85rem',
+            'font-weight:600',
             'letter-spacing:0.04em',
             'pointer-events:none',
-            'z-index:9999',
+            'z-index:99999',
             'opacity:0',
-            'transition:all 0.35s cubic-bezier(0.25, 1, 0.5, 1)'
+            'transition:all 0.3s cubic-bezier(0.25, 1, 0.5, 1)'
         ].join(';');
-        document.body.appendChild(notif);
+        document.body.appendChild(toast);
     }
 
-    notif.textContent = '✨ ' + msg;
-    requestAnimationFrame(() => {
-        notif.style.opacity = '1';
-        notif.style.transform = 'translateX(-50%) translateY(0)';
+    toast.textContent = message;
+    requestAnimationFrame(function() {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
     });
 
-    clearTimeout(notif._timer);
-    notif._timer = setTimeout(() => {
-        notif.style.opacity = '0';
-        notif.style.transform = 'translateX(-50%) translateY(20px)';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(function() {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(-20px)';
     }, 2800);
+}
+
+function initFilmStrip() {
+    var frames = document.querySelectorAll('.film-frame');
+    frames.forEach(function (frame) {
+        frame.addEventListener('click', function (e) {
+            e.stopPropagation();
+            extractFrameToCanvas(frame);
+        });
+    });
+
+    var filmStrip = document.getElementById('film-strip');
+    if (filmStrip) {
+        filmStrip.addEventListener('click', function (e) {
+            var frame = e.target.closest('.film-frame');
+            if (frame) {
+                extractFrameToCanvas(frame);
+            }
+        });
+    }
 }
 
 /**
@@ -378,4 +389,5 @@ function initScrollBackground() {
         document.documentElement.style.setProperty('--color-bg', newColor);
     });
 }
+
 
