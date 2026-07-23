@@ -1948,6 +1948,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+    <!-- Hidden Audio Element -->
+    <audio id="ambient-audio" src="./audio/fratres.mp3" loop crossorigin="anonymous" style="display: none;"></audio>
     <!-- Floating Audio Widget -->
         <div id="faw-widget" class="faw-widget">
         <div class="faw-header">
@@ -1988,10 +1990,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const pauseSvg = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
 
     if (apPlay) {
-        const audio = new Audio();
-        audio.crossOrigin = "anonymous";
-        audio.loop = true; // Seamless loop for the single ambient track
-        audio.src = "audio/fratres.mp3";
+        const audio = document.getElementById('ambient-audio');
 
         function togglePlay() {
             console.log("Play button clicked");
