@@ -164,7 +164,14 @@
                       <button class="filter-btn" data-filter="relics">Relics</button>
                       <button class="filter-btn" data-filter="workshop">Workshop</button>
                   </div>
-                  <button class="minimal-shuffle-btn" id="shuffle-btn">SHUFFLE VIBES</button>
+                  <div class="elegant-synth-lever-wrap" id="shuffle-lever-trigger">
+                      <span class="elegant-synth-label">SHUFFLE VIBES</span>
+                      <div class="elegant-synth-track">
+                          <div class="elegant-synth-handle">
+                              <div class="elegant-synth-knob"></div>
+                          </div>
+                      </div>
+                  </div>
               </div>
 
               <div class="gallery-grid">
@@ -1741,26 +1748,34 @@ document.addEventListener('click', function(e) {
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var shuffleBtn = document.getElementById('shuffle-btn');
+    var synthLever = document.getElementById('shuffle-lever-trigger');
     var grid = document.querySelector('.gallery-grid');
-    if(shuffleBtn && grid) {
-        shuffleBtn.addEventListener('click', function() {
-            if(grid.classList.contains('shuffling')) return;
+    
+    if (synthLever && grid) {
+        synthLever.addEventListener('click', function() {
+            if (grid.classList.contains('shuffling')) return;
             
+            // Trigger animation
+            synthLever.classList.add('pulled');
             grid.classList.add('shuffling');
             
             setTimeout(function() {
+                // Revert lever
+                synthLever.classList.remove('pulled');
+                
+                // Fisher-Yates shuffle logic
                 var cards = Array.from(grid.querySelectorAll('.gallery-card'));
                 for (var i = cards.length - 1; i > 0; i--) {
                     var j = Math.floor(Math.random() * (i + 1));
                     grid.appendChild(cards[j]); 
                 }
+                
+                // Remove shuffle blur
                 setTimeout(function() {
                     grid.classList.remove('shuffling');
                 }, 50);
-            }, 350);
+            }, 300);
         });
-    }
     }
 });
 </script>
@@ -3271,6 +3286,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
