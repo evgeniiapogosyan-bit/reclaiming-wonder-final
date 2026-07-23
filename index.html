@@ -154,24 +154,17 @@
                 <span class="gallery-tag">discovery grid</span>
                 <h2 class="gallery-title">Collected Fragments</h2>
             </div>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="shadow-theater">Shadow Theater</button>
-                <button class="filter-btn" data-filter="tents">Tents</button>
-                <button class="filter-btn" data-filter="curtains">Curtains</button>
-                <button class="filter-btn" data-filter="architecture">Architecture</button>
-                <button class="filter-btn" data-filter="relics">Relics</button>
-                <button class="filter-btn" data-filter="workshop">Workshop</button>
-                          </div>
-              
-              <!-- Art Synthesizer Lever -->
-              <div class="synthesizer-container">
-                  <span class="synth-label">SHUFFLE VIBES</span>
-                  <div class="synth-lever-base">
-                      <div class="synth-lever-handle" id="shuffle-lever">
-                          <div class="synth-lever-knob"></div>
-                      </div>
+            <div class="gallery-controls-wrapper">
+                  <div class="filter-buttons" style="padding: 0;">
+                      <button class="filter-btn active" data-filter="all">All</button>
+                      <button class="filter-btn" data-filter="shadow-theater">Shadow Theater</button>
+                      <button class="filter-btn" data-filter="tents">Tents</button>
+                      <button class="filter-btn" data-filter="curtains">Curtains</button>
+                      <button class="filter-btn" data-filter="architecture">Architecture</button>
+                      <button class="filter-btn" data-filter="relics">Relics</button>
+                      <button class="filter-btn" data-filter="workshop">Workshop</button>
                   </div>
+                  <button class="minimal-shuffle-btn" id="shuffle-btn">SHUFFLE VIBES</button>
               </div>
 
               <div class="gallery-grid">
@@ -1748,38 +1741,26 @@ document.addEventListener('click', function(e) {
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var lever = document.getElementById('shuffle-lever');
+    var shuffleBtn = document.getElementById('shuffle-btn');
     var grid = document.querySelector('.gallery-grid');
-    if(lever && grid) {
-        lever.addEventListener('click', function() {
-            if(lever.classList.contains('pulled')) return; // prevent spamming
+    if(shuffleBtn && grid) {
+        shuffleBtn.addEventListener('click', function() {
+            if(grid.classList.contains('shuffling')) return;
             
-            // 1. Animate lever pull
-            lever.classList.add('pulled');
-            
-            // 2. Trigger slot machine blur/slide out
             grid.classList.add('shuffling');
             
             setTimeout(function() {
-                // 3. Release lever
-                lever.classList.remove('pulled');
-                
-                // 4. Shuffle DOM nodes
                 var cards = Array.from(grid.querySelectorAll('.gallery-card'));
                 for (var i = cards.length - 1; i > 0; i--) {
                     var j = Math.floor(Math.random() * (i + 1));
-                    // appendChild automatically moves the element from its current position
                     grid.appendChild(cards[j]); 
                 }
-                
-                // 5. Trigger slide/fade in
-                // Small timeout to let browser register the DOM reorder before removing shuffling class
                 setTimeout(function() {
                     grid.classList.remove('shuffling');
                 }, 50);
-                
             }, 350);
         });
+    }
     }
 });
 </script>
@@ -3290,6 +3271,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
