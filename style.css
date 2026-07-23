@@ -1721,7 +1721,9 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    cursor: pointer;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    z-index: 100;
 }
 .elegant-synth-label {
     font-family: monospace;
@@ -1768,13 +1770,14 @@ body {
 }
 
 /* Slot Machine Effect */
-.gallery-grid .gallery-card {
+.gallery-grid .grid-item {
     transition: filter 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
 }
-.gallery-grid.shuffling .gallery-card {
-    filter: blur(10px) contrast(1.5);
-    transform: translateY(40px) scale(0.9);
+.gallery-grid.shuffling .grid-item {
+    filter: blur(8px) contrast(1.2);
+    transform: translateY(20px) scale(0.95);
     opacity: 0;
 }
+
 
 

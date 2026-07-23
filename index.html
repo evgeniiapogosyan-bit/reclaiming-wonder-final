@@ -1753,6 +1753,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (synthLever && grid) {
         synthLever.addEventListener('click', function() {
+            console.log('SHUFFLE CLICKED');
+            
             if (grid.classList.contains('shuffling')) return;
             
             // Trigger animation
@@ -1760,17 +1762,25 @@ document.addEventListener('DOMContentLoaded', function() {
             grid.classList.add('shuffling');
             
             setTimeout(function() {
-                // Revert lever
+                // Revert lever pull animation
                 synthLever.classList.remove('pulled');
                 
-                // Fisher-Yates shuffle logic
-                var cards = Array.from(grid.querySelectorAll('.gallery-card'));
+                // Fisher-Yates shuffle logic using .grid-item instead of .gallery-card
+                var cards = Array.from(grid.querySelectorAll('.grid-item'));
                 for (var i = cards.length - 1; i > 0; i--) {
                     var j = Math.floor(Math.random() * (i + 1));
-                    grid.appendChild(cards[j]); 
+                    var temp = cards[i];
+                    cards[i] = cards[j];
+                    cards[j] = temp;
                 }
                 
-                // Remove shuffle blur
+                // Clear grid and re-append shuffled items
+                grid.innerHTML = '';
+                cards.forEach(function(card) {
+                    grid.appendChild(card);
+                });
+                
+                // Remove shuffle blur to trigger fade-in transition
                 setTimeout(function() {
                     grid.classList.remove('shuffling');
                 }, 50);
@@ -3286,6 +3296,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
