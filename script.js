@@ -391,3 +391,15 @@ function initScrollBackground() {
 }
 
 
+
+// 7. Extreme Event Handler Registration (Document Level)
+document.addEventListener('click', function(e) {
+    const frame = e.target.closest('.film-frame');
+    if (!frame) return;
+    
+    e.preventDefault();
+    alert('CLICK DETECTED! Now generating shapes...'); // Temporary strict test
+    
+    // Deconstruct frame to canvas
+    extractFrameToCanvas(frame);
+});
