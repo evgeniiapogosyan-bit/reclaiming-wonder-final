@@ -2320,3 +2320,10 @@ html.lenis, html.lenis body {
 @keyframes holoHue { 
     100% { filter: hue-rotate(360deg); } 
 }
+
+/* Interactive Canvas Hologram */
+#hologram-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}

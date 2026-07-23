@@ -1949,11 +1949,9 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <div class="faw-body">
             <div class="faw-media-frame">
-                                <!-- Pure CSS Animated Hologram -->
-                <div class="faw-hologram">
-                    <div class="holo-aura"></div>
-                    <div class="holo-core"></div>
-                </div>
+                                                <!-- Interactive Canvas Hologram -->
+                <canvas id="hologram-canvas"></canvas>
+            </div>
             </div>
             <div class="faw-info-controls">
                 <span id="faw-track-name" class="faw-track-name">Arvo P&auml;rt &mdash; Fratres</span>
@@ -1967,53 +1965,167 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 <script>
-// Premium Floating Audio Widget Logic
+// Premium Floating Audio Widget & Interactive Canvas Hologram Logic
 document.addEventListener('DOMContentLoaded', function() {
+    // --- 1. Audio Logic ---
     var apPlay = document.getElementById('faw-play');
-        var apTrackName = document.getElementById('faw-track-name');
+    var apTrackName = document.getElementById('faw-track-name');
     var apProgress = document.getElementById('faw-progress-bar');
     var apToggle = document.getElementById('faw-toggle');
     var apWidget = document.getElementById('faw-widget');
 
-    if (!apPlay) return;
+    if (apPlay) {
+        const audio = new Audio();
+        audio.crossOrigin = "anonymous";
+        audio.loop = true; // Seamless loop for the single ambient track
+        audio.src = "audio/fratres.mp3";
 
-    const audio = new Audio();
-    audio.crossOrigin = "anonymous";
-    audio.loop = true; // Seamless loop for the single ambient track
-    audio.src = "audio/fratres.mp3";
-
-    function togglePlay() {
-        if (audio.paused) {
-            audio.play().then(() => {
-                apPlay.innerHTML = '&#10074;&#10074;';
-            }).catch(console.error);
-        } else {
-            audio.pause();
-            apPlay.innerHTML = '&#9654;';
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    console.log("Audio playing successfully");
+                    apPlay.innerHTML = '&#10074;&#10074;';
+                }).catch((e) => {
+                    console.error("Audio play error:", e);
+                });
+            } else {
+                audio.pause();
+                apPlay.innerHTML = '&#9654;';
+            }
         }
+
+        apPlay.addEventListener('click', togglePlay);
+
+        audio.addEventListener('play', function() { apPlay.innerHTML = '&#10074;&#10074;'; });
+        audio.addEventListener('playing', function() { apPlay.innerHTML = '&#10074;&#10074;'; });
+        audio.addEventListener('pause', function() { apPlay.innerHTML = '&#9654;'; });
+        audio.addEventListener('timeupdate', function() {
+            if (audio.duration) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                if(apProgress) apProgress.style.width = percent + '%';
+            }
+        });
     }
 
-    apPlay.addEventListener('click', togglePlay);
+    if (apToggle && apWidget) {
+        // Minimize toggle
+        apToggle.addEventListener('click', function() {
+            apWidget.classList.toggle('minimized');
+            if (apWidget.classList.contains('minimized')) {
+                apToggle.innerHTML = '( + )';
+            } else {
+                apToggle.innerHTML = '( &ndash; )';
+            }
+        });
+    }
 
-    audio.addEventListener('play', function() { apPlay.innerHTML = '&#10074;&#10074;'; });
-    audio.addEventListener('playing', function() { apPlay.innerHTML = '&#10074;&#10074;'; });
-    audio.addEventListener('pause', function() { apPlay.innerHTML = '&#9654;'; });
-    audio.addEventListener('timeupdate', function() {
-        if (audio.duration) {
-            const percent = (audio.currentTime / audio.duration) * 100;
-            apProgress.style.width = percent + '%';
-        }
-    });
+    // --- 2. Canvas Hologram Logic ---
+    const canvas = document.getElementById('hologram-canvas');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let width = canvas.offsetWidth;
+        let height = canvas.offsetHeight;
+        canvas.width = width * window.devicePixelRatio;
+        canvas.height = height * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        
+        let mouseX = width / 2;
+        let mouseY = height / 2;
+        let targetX = width / 2;
+        let targetY = height / 2;
+        
+        // Listen to global mouse moves for parallax
+        window.addEventListener('mousemove', function(e) {
+            targetX = e.clientX;
+            targetY = e.clientY;
+        });
 
-    // Minimize toggle
-    apToggle.addEventListener('click', function() {
-        apWidget.classList.toggle('minimized');
-        if (apWidget.classList.contains('minimized')) {
-            apToggle.innerHTML = '( + )';
-        } else {
-            apToggle.innerHTML = '( &ndash; )';
+        // Resize handler
+        window.addEventListener('resize', function() {
+            width = canvas.offsetWidth;
+            height = canvas.offsetHeight;
+            canvas.width = width * window.devicePixelRatio;
+            canvas.height = height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        });
+
+        let time = 0;
+        
+        function drawHologram() {
+            time += 0.02;
+            ctx.clearRect(0, 0, width, height);
+
+            // Lerp mouse position for smooth trailing effect
+            const localTargetX = width/2 + ((targetX - window.innerWidth/2) * 0.15);
+            const localTargetY = height/2 + ((targetY - window.innerHeight/2) * 0.15);
+            
+            mouseX += (localTargetX - mouseX) * 0.05;
+            mouseY += (localTargetY - mouseY) * 0.05;
+
+            // Background
+            ctx.fillStyle = '#0a0a0f';
+            ctx.fillRect(0, 0, width, height);
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) * 0.4;
+
+            // Draw glowing aura (shifting colors)
+            const hue1 = (Math.sin(time * 0.5) * 50 + 200) % 360;
+            const hue2 = (Math.cos(time * 0.3) * 50 + 280) % 360;
+
+            const auraGrad = ctx.createRadialGradient(mouseX, mouseY, radius * 0.1, centerX, centerY, radius * 2.5);
+            auraGrad.addColorStop(0, hsla( + hue1 + , 80%, 60%, 0.4));
+            auraGrad.addColorStop(0.5, hsla( + hue2 + , 70%, 40%, 0.1));
+            auraGrad.addColorStop(1, 'rgba(0,0,0,0)');
+            
+            ctx.fillStyle = auraGrad;
+            ctx.fillRect(0, 0, width, height);
+
+            // Draw holographic core (iridescent orb)
+            ctx.beginPath();
+            ctx.arc(centerX, centerY + Math.sin(time)*5, radius, 0, Math.PI * 2);
+            
+            const orbGrad = ctx.createRadialGradient(
+                mouseX, mouseY + Math.sin(time)*5, radius * 0.1, 
+                centerX, centerY + Math.sin(time)*5, radius
+            );
+            orbGrad.addColorStop(0, 'rgba(255,255,255,0.9)');
+            orbGrad.addColorStop(0.2, hsla( + hue1 + , 90%, 75%, 0.8));
+            orbGrad.addColorStop(0.6, hsla( + hue2 + , 80%, 50%, 0.4));
+            orbGrad.addColorStop(1, 'rgba(10,10,20,0.6)');
+            
+            ctx.fillStyle = orbGrad;
+            ctx.fill();
+
+            // Inner mesh / wireframe lines simulation
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY + Math.sin(time)*5, radius, 0, Math.PI * 2);
+            ctx.clip();
+            
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+            for(let i = -radius; i < radius; i+=10) {
+                ctx.beginPath();
+                // Parallax shift for lines
+                const offset = (mouseX - centerX) * 0.2;
+                ctx.moveTo(centerX - radius, centerY + i + Math.sin(time*2 + i*0.1)*5);
+                ctx.lineTo(centerX + radius, centerY + i + Math.sin(time*2 + i*0.1)*5);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // Core rim light
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = hsla( + hue1 + , 100%, 80%, 0.5);
+            ctx.stroke();
+
+            requestAnimationFrame(drawHologram);
         }
-    });
+        
+        drawHologram();
+    }
 });
 </script>
 </body>
@@ -3523,6 +3635,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
