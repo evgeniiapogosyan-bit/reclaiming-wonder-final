@@ -1942,21 +1942,24 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
     <!-- Floating Audio Widget -->
-    <div id="faw-widget" class="faw-widget">
+        <div id="faw-widget" class="faw-widget">
         <div class="faw-header">
             <span class="faw-header-title">NOW PLAYING</span>
             <button id="faw-toggle" class="faw-toggle-btn" title="Minimize/Expand">( &ndash; )</button>
         </div>
         <div class="faw-body">
             <div class="faw-media-frame">
-                                                <!-- Interactive Canvas Hologram -->
+                <!-- Interactive Canvas Fluid Blob -->
                 <canvas id="hologram-canvas"></canvas>
-            </div>
             </div>
             <div class="faw-info-controls">
                 <span id="faw-track-name" class="faw-track-name">Arvo P&auml;rt &mdash; Fratres</span>
                 <div class="faw-controls">
-                    <button class="faw-btn faw-play-btn" id="faw-play">&#9654;</button>
+                    <button class="faw-btn faw-play-btn" id="faw-play">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="faw-progress-container">
                     <div class="faw-progress-bar" id="faw-progress-bar"></div>
@@ -1964,8 +1967,10 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
     </div>
+        </div>
+    </div>
 <script>
-// Premium Floating Audio Widget & Interactive Canvas Hologram Logic
+// Premium Floating Audio Widget & Interactive Canvas Blob Logic
 document.addEventListener('DOMContentLoaded', function() {
     // --- 1. Audio Logic ---
     var apPlay = document.getElementById('faw-play');
@@ -1973,6 +1978,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var apProgress = document.getElementById('faw-progress-bar');
     var apToggle = document.getElementById('faw-toggle');
     var apWidget = document.getElementById('faw-widget');
+
+    const playSvg = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    const pauseSvg = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
 
     if (apPlay) {
         const audio = new Audio();
@@ -1984,21 +1992,21 @@ document.addEventListener('DOMContentLoaded', function() {
             if (audio.paused) {
                 audio.play().then(() => {
                     console.log("Audio playing successfully");
-                    apPlay.innerHTML = '&#10074;&#10074;';
+                    apPlay.innerHTML = pauseSvg;
                 }).catch((e) => {
                     console.error("Audio play error:", e);
                 });
             } else {
                 audio.pause();
-                apPlay.innerHTML = '&#9654;';
+                apPlay.innerHTML = playSvg;
             }
         }
 
         apPlay.addEventListener('click', togglePlay);
 
-        audio.addEventListener('play', function() { apPlay.innerHTML = '&#10074;&#10074;'; });
-        audio.addEventListener('playing', function() { apPlay.innerHTML = '&#10074;&#10074;'; });
-        audio.addEventListener('pause', function() { apPlay.innerHTML = '&#9654;'; });
+        audio.addEventListener('play', function() { apPlay.innerHTML = pauseSvg; });
+        audio.addEventListener('playing', function() { apPlay.innerHTML = pauseSvg; });
+        audio.addEventListener('pause', function() { apPlay.innerHTML = playSvg; });
         audio.addEventListener('timeupdate', function() {
             if (audio.duration) {
                 const percent = (audio.currentTime / audio.duration) * 100;
@@ -2019,7 +2027,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- 2. Canvas Hologram Logic ---
+    // --- 2. Canvas Holographic Blob Logic ---
     const canvas = document.getElementById('hologram-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -2033,12 +2041,16 @@ document.addEventListener('DOMContentLoaded', function() {
         let mouseY = height / 2;
         let targetX = width / 2;
         let targetY = height / 2;
+        let isHovered = false;
         
         // Listen to global mouse moves for parallax
         window.addEventListener('mousemove', function(e) {
             targetX = e.clientX;
             targetY = e.clientY;
         });
+
+        canvas.addEventListener('mouseenter', () => isHovered = true);
+        canvas.addEventListener('mouseleave', () => isHovered = false);
 
         // Resize handler
         window.addEventListener('resize', function() {
@@ -2050,9 +2062,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         let time = 0;
+        let distortionVal = 0;
         
         function drawHologram() {
             time += 0.02;
+            
+            // Smooth distortion on hover
+            const targetDistortion = isHovered ? 25 : 10;
+            distortionVal += (targetDistortion - distortionVal) * 0.05;
+
             ctx.clearRect(0, 0, width, height);
 
             // Lerp mouse position for smooth trailing effect
@@ -2068,13 +2086,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const centerX = width / 2;
             const centerY = height / 2;
-            const radius = Math.min(width, height) * 0.4;
+            const baseRadius = Math.min(width, height) * 0.35;
 
             // Draw glowing aura (shifting colors)
             const hue1 = (Math.sin(time * 0.5) * 50 + 200) % 360;
             const hue2 = (Math.cos(time * 0.3) * 50 + 280) % 360;
 
-            const auraGrad = ctx.createRadialGradient(mouseX, mouseY, radius * 0.1, centerX, centerY, radius * 2.5);
+            const auraGrad = ctx.createRadialGradient(mouseX, mouseY, baseRadius * 0.1, centerX, centerY, baseRadius * 3);
             auraGrad.addColorStop(0, hsla( + hue1 + , 80%, 60%, 0.4));
             auraGrad.addColorStop(0.5, hsla( + hue2 + , 70%, 40%, 0.1));
             auraGrad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -2082,13 +2100,23 @@ document.addEventListener('DOMContentLoaded', function() {
             ctx.fillStyle = auraGrad;
             ctx.fillRect(0, 0, width, height);
 
-            // Draw holographic core (iridescent orb)
+            // Create fluid blob path
             ctx.beginPath();
-            ctx.arc(centerX, centerY + Math.sin(time)*5, radius, 0, Math.PI * 2);
+            for(let i = 0; i <= Math.PI * 2.1; i += 0.1) {
+                // Liquid physics distortion
+                const noise = Math.sin(i * 3 + time) * distortionVal + Math.cos(i * 2 - time * 1.5) * (distortionVal * 0.5);
+                const r = baseRadius + noise;
+                const x = centerX + Math.cos(i) * r;
+                const y = centerY + Math.sin(i) * r;
+                if(i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
             
+            // Draw holographic core (iridescent liquid)
             const orbGrad = ctx.createRadialGradient(
-                mouseX, mouseY + Math.sin(time)*5, radius * 0.1, 
-                centerX, centerY + Math.sin(time)*5, radius
+                mouseX, mouseY + Math.sin(time)*5, baseRadius * 0.1, 
+                centerX, centerY, baseRadius * 1.5
             );
             orbGrad.addColorStop(0, 'rgba(255,255,255,0.9)');
             orbGrad.addColorStop(0.2, hsla( + hue1 + , 90%, 75%, 0.8));
@@ -2100,18 +2128,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Inner mesh / wireframe lines simulation
             ctx.save();
-            ctx.beginPath();
-            ctx.arc(centerX, centerY + Math.sin(time)*5, radius, 0, Math.PI * 2);
-            ctx.clip();
+            ctx.clip(); // clip to the blob shape
             
             ctx.lineWidth = 1;
-            ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-            for(let i = -radius; i < radius; i+=10) {
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            for(let i = -baseRadius*2; i < baseRadius*2; i+=12) {
                 ctx.beginPath();
                 // Parallax shift for lines
-                const offset = (mouseX - centerX) * 0.2;
-                ctx.moveTo(centerX - radius, centerY + i + Math.sin(time*2 + i*0.1)*5);
-                ctx.lineTo(centerX + radius, centerY + i + Math.sin(time*2 + i*0.1)*5);
+                ctx.moveTo(centerX - baseRadius*2, centerY + i + Math.sin(time*2 + i*0.1)*10);
+                ctx.lineTo(centerX + baseRadius*2, centerY + i + Math.sin(time*2 + i*0.1)*10);
                 ctx.stroke();
             }
             ctx.restore();
@@ -3635,6 +3660,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
