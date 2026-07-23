@@ -60,7 +60,32 @@
     <main class="scroll-container">
         <!-- Hero Section -->
         <section id="hero" class="section hero-section">
-            <div class="hero-content">
+    <!-- Dynamic Background Video Switcher -->
+    <div class="hero-bg-video-wrapper">
+        <div class="hero-bg-overlay"></div>
+        <video id="hero-video-layer-a" class="hero-bg-video active-layer" autoplay muted loop playsinline src="hero-1.mp4"></video>
+        <video id="hero-video-layer-b" class="hero-bg-video inactive-layer" autoplay muted loop playsinline src=""></video>
+    </div>
+
+    <!-- Right-side Vertical Menu -->
+    <nav class="hero-vertical-menu">
+        <ul class="hero-menu-list">
+            <li class="hero-menu-item active" data-video-index="0">THIS IS US</li>
+            <li class="hero-menu-item" data-video-index="1">PITCHDECK</li>
+            <li class="hero-menu-item" data-video-index="2">MANIFESTO</li>
+            <li class="hero-menu-item" data-video-index="3">CONTACT</li>
+        </ul>
+    </nav>
+
+    <!-- Bottom Status Bar -->
+    <div class="hero-status-bar">
+        <span class="hero-status-indicator" id="hero-video-status">[ 01 / 04 ]</span>
+        <div class="hero-progress-track">
+            <div class="hero-progress-bar" id="hero-video-progress"></div>
+        </div>
+    </div>
+
+    <div class="hero-content">
                 <h1 id="hero-title" class="hero-title">reclaiming wonder</h1>
                 <p class="hero-subtitle">scroll to explore</p>
                 <div class="scroll-indicator">
@@ -1835,6 +1860,97 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<script>
+// Hero Video Switcher Logic
+document.addEventListener('DOMContentLoaded', function() {
+    var videos = ['hero-1.mp4', 'hero-2.mp4', 'hero-3.mp4', 'hero-4.mp4'];
+    var currentIdx = 0;
+    var layerA = document.getElementById('hero-video-layer-a');
+    var layerB = document.getElementById('hero-video-layer-b');
+    var isLayerAActive = true;
+    
+    var menuItems = document.querySelectorAll('.hero-menu-item');
+    var statusIndicator = document.getElementById('hero-video-status');
+    var progressBar = document.getElementById('hero-video-progress');
+    
+    var switchInterval;
+    var progressInterval;
+    var progressTime = 0;
+    var slideDuration = 6000; // 6 seconds
+    
+    function updateProgress() {
+        progressTime += 50;
+        var percent = (progressTime / slideDuration) * 100;
+        if (percent > 100) percent = 100;
+        if(progressBar) progressBar.style.width = percent + '%';
+    }
+    
+    function switchVideo(newIdx) {
+        if (newIdx === currentIdx) return;
+        currentIdx = newIdx;
+        progressTime = 0;
+        
+        var activeLayer = isLayerAActive ? layerA : layerB;
+        var inactiveLayer = isLayerAActive ? layerB : layerA;
+        
+        // Preload next video
+        inactiveLayer.src = videos[currentIdx];
+        inactiveLayer.play().catch(e => console.log('Autoplay prevented', e));
+        
+        // Crossfade
+        inactiveLayer.classList.remove('inactive-layer');
+        inactiveLayer.classList.add('active-layer');
+        
+        activeLayer.classList.remove('active-layer');
+        activeLayer.classList.add('inactive-layer');
+        
+        isLayerAActive = !isLayerAActive;
+        
+        // Update UI
+        menuItems.forEach(function(item) {
+            item.classList.remove('active');
+            if (parseInt(item.getAttribute('data-video-index')) === currentIdx) {
+                item.classList.add('active');
+            }
+        });
+        
+        if (statusIndicator) {
+            statusIndicator.textContent = '[ 0' + (currentIdx + 1) + ' / 04 ]';
+        }
+    }
+    
+    function startAutoSwitch() {
+        clearInterval(switchInterval);
+        clearInterval(progressInterval);
+        
+        switchInterval = setInterval(function() {
+            var nextIdx = (currentIdx + 1) % videos.length;
+            switchVideo(nextIdx);
+        }, slideDuration);
+        
+        progressInterval = setInterval(updateProgress, 50);
+    }
+    
+    // Initial start
+    startAutoSwitch();
+    
+    // Interactive menu click
+    menuItems.forEach(function(item) {
+        item.addEventListener('click', function() {
+            var targetIdx = parseInt(this.getAttribute('data-video-index'));
+            switchVideo(targetIdx);
+            startAutoSwitch(); // reset timers
+        });
+        
+        // Optional hover: uncomment if user strictly wants hover to immediately switch (can be annoying)
+        item.addEventListener('mouseenter', function() {
+            var targetIdx = parseInt(this.getAttribute('data-video-index'));
+            switchVideo(targetIdx);
+            startAutoSwitch(); // reset timers
+        });
+    });
+});
+</script>
 </body>
 <script>
 (function () {
@@ -3342,6 +3458,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
