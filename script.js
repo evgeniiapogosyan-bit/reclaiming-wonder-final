@@ -144,93 +144,6 @@ function initFilters() {
 /**
  * Cinematic Roll - Deconstruct Frame to Fabric.js Canvas Workflow
  */
-function extractFrameToCanvas(frameEl) {
-    if (!frameEl) return;
-
-    // 1. Debug log
-    console.log('Film frame clicked!', frameEl);
-
-    // 2. CSS opacity flash (0.5 to 1 over 0.2s)
-    frameEl.style.transition = 'opacity 0.1s ease';
-    frameEl.style.opacity = '0.5';
-    setTimeout(function () {
-        frameEl.style.transition = 'opacity 0.2s ease';
-        frameEl.style.opacity = '1';
-    }, 100);
-
-    // 3. Extract palette colors
-    var frameId = frameEl.getAttribute('data-frame-id') || '1';
-    var paletteMap = {
-        '1': ['#1b2a4a', '#c98a20', '#9e1b32', '#e0c070'],
-        '2': ['#1a6648', '#00b4d8', '#f0e8d8', '#2aaa80'],
-        '3': ['#a84c1c', '#e89060', '#3b2e8c', '#ffd870'],
-        '4': ['#9e1b32', '#00a896', '#c98a20', '#00b4d8'],
-        '5': ['#3b2e8c', '#2aaa80', '#ffe080', '#d04068'],
-        '6': ['#c46028', '#00b4d8', '#2a2834', '#e89060']
-    };
-
-    var colors = paletteMap[frameId] || ['#1b2a4a', '#c98a20', '#9e1b32', '#00b4d8'];
-
-    // 4. Fabric.js Canvas - Generate 3 to 5 shapes & call canvas.renderAll()
-    var canvas = window.fabricCanvas;
-
-    if (canvas && typeof fabric !== 'undefined') {
-        var cW = canvas.getWidth() || 800;
-        var cH = canvas.getHeight() || 500;
-        var centerX = cW / 2;
-        var centerY = cH / 2;
-
-        var numShapes = 3 + Math.floor(Math.random() * 3); // 3, 4, or 5 shapes
-        var shapeTypes = ['Circle', 'Rect', 'Triangle'];
-
-        for (var i = 0; i < numShapes; i++) {
-            var color = colors[i % colors.length];
-            var type = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
-            var size = 65 + Math.random() * 75;
-            var posX = centerX + (Math.random() - 0.5) * (cW * 0.4);
-            var posY = centerY + (Math.random() - 0.5) * (cH * 0.4);
-            var angle = Math.floor(Math.random() * 60) - 30;
-
-            var shape;
-            if (type === 'Circle') {
-                shape = new fabric.Circle({
-                    radius: size / 2,
-                    fill: color,
-                    left: posX,
-                    top: posY,
-                    originX: 'center',
-                    originY: 'center',
-                    opacity: 0.85,
-                    angle: angle
-                });
-            } else if (type === 'Rect') {
-                shape = new fabric.Rect({
-                    width: size,
-                    height: size * (0.6 + Math.random() * 0.8),
-                    fill: color,
-                    rx: 6,
-                    ry: 6,
-                    left: posX,
-                    top: posY,
-                    originX: 'center',
-                    originY: 'center',
-                    opacity: 0.85,
-                    angle: angle
-                });
-            } else {
-                shape = new fabric.Triangle({
-                    width: size,
-                    height: size,
-                    fill: color,
-                    left: posX,
-                    top: posY,
-                    originX: 'center',
-                    originY: 'center',
-                    opacity: 0.85,
-                    angle: angle
-                });
-            }
-
             shape._wsLabel = 'Film Shape (' + color + ')';
             canvas.add(shape);
             canvas.setActiveObject(shape);
@@ -392,14 +305,5 @@ function initScrollBackground() {
 
 
 
-// 7. Extreme Event Handler Registration (Document Level)
-document.addEventListener('click', function(e) {
-    const frame = e.target.closest('.film-frame');
-    if (!frame) return;
-    
-    e.preventDefault();
-    alert('CLICK DETECTED! Now generating shapes...'); // Temporary strict test
-    
-    // Deconstruct frame to canvas
-    extractFrameToCanvas(frame);
-});
+
+
