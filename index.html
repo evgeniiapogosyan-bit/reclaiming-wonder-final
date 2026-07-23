@@ -1961,7 +1961,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="faw-info-controls">
                 <span id="faw-track-name" class="faw-track-name">Arvo P&auml;rt &mdash; Fratres</span>
                 <div class="faw-controls">
-                    <button class="faw-btn faw-play-btn" id="faw-play">
+                    <button class="faw-btn faw-play-btn" id="play-toggle-btn">
                         <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
@@ -1978,7 +1978,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 // Premium Floating Audio Widget Logic (Crash-Free CSS Hologram)
 document.addEventListener('DOMContentLoaded', function() {
-    var apPlay = document.getElementById('faw-play');
+    var apPlay = document.getElementById('play-toggle-btn');
     var apProgress = document.getElementById('faw-progress-bar');
     var apToggle = document.getElementById('faw-toggle');
     var apWidget = document.getElementById('faw-widget');
@@ -1990,19 +1990,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const audio = document.getElementById('ambient-audio');
 
         function togglePlay() {
-            console.log("Play button clicked");
+            console.log("Button clicked");
             if (audio.paused) {
                 var playPromise = audio.play();
                 if (playPromise !== undefined) {
                     playPromise.then(() => {
-                        console.log("Audio playing successfully");
+                        console.log("Audio playing");
                         apPlay.innerHTML = pauseSvg;
-                    }).catch((e) => {
-                        console.error("Audio play error:", e);
+                    }).catch((error) => {
+                        console.error("Audio play failed:", error);
                     });
                 }
             } else {
                 audio.pause();
+                console.log("Audio paused");
                 apPlay.innerHTML = playSvg;
             }
         }
