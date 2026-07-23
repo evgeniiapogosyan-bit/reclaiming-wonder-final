@@ -220,7 +220,8 @@ body {
     box-shadow: 0 45px 90px rgba(0, 0, 0, 0.9), 0 0 80px rgba(255, 255, 255, 0.02);
 }
 
-.image-card img {
+.image-card img,
+.image-card .ripple-target {
     width: 100%;
     height: auto;
     aspect-ratio: 3 / 4;
@@ -231,19 +232,12 @@ body {
     display: block;
 }
 
-.image-card:hover img {
+.image-card:hover img,
+.image-card:hover .ripple-target {
     transform: scale(1.025);
     filter: grayscale(0%) contrast(100%);
 }
 
-.liquid-canvas {
-    position: absolute;
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0;
-    border-radius: 2px;
-    transition: opacity 0.3s ease;
-}
 
 .card-caption {
     margin-top: 14px;

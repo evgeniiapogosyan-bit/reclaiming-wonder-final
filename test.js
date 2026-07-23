@@ -125,6 +125,69 @@
 })();
 
 
+document.addEventListener('click', function(e) {
+    var frame = e.target.closest('.film-frame');
+    if (!frame) return;
+    
+    // Prevent default
+    e.preventDefault();
+    
+    // 1. Critical Success Alert
+    alert('CRITICAL SUCCESS: Vibe click detected!');
+    
+    // 2. Extract Palette
+    var frameId = frame.getAttribute('data-frame-id') || '1';
+    var paletteMap = {
+        '1': ['#1b2a4a', '#c98a20', '#9e1b32', '#e0c070'],
+        '2': ['#1a6648', '#00b4d8', '#f0e8d8', '#2aaa80'],
+        '3': ['#a84c1c', '#e89060', '#3b2e8c', '#ffd870'],
+        '4': ['#9e1b32', '#00a896', '#c98a20', '#00b4d8'],
+        '5': ['#3b2e8c', '#2aaa80', '#ffe080', '#d04068'],
+        '6': ['#c46028', '#00b4d8', '#2a2834', '#e89060']
+    };
+    var colors = paletteMap[frameId] || ['#1b2a4a', '#c98a20', '#9e1b32', '#00b4d8'];
+
+    // 3. Generate Fabric.js shapes on canvas
+    var canvas = window.fabricCanvas;
+    if (canvas && typeof fabric !== 'undefined') {
+        var cW = canvas.getWidth() || 800;
+        var cH = canvas.getHeight() || 500;
+        var centerX = cW / 2;
+        var centerY = cH / 2;
+
+        var numShapes = 3 + Math.floor(Math.random() * 3);
+        var shapeTypes = ['Circle', 'Rect', 'Triangle'];
+
+        for (var i = 0; i < numShapes; i++) {
+            var color = colors[i % colors.length];
+            var type = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+            var size = 65 + Math.random() * 75;
+            var posX = centerX + (Math.random() - 0.5) * (cW * 0.4);
+            var posY = centerY + (Math.random() - 0.5) * (cH * 0.4);
+            var angle = Math.floor(Math.random() * 60) - 30;
+
+            var shape;
+            if (type === 'Circle') {
+                shape = new fabric.Circle({ radius: size/2, fill: color, left: posX, top: posY, originX: 'center', originY: 'center', opacity: 0.85, angle: angle });
+            } else if (type === 'Rect') {
+                shape = new fabric.Rect({ width: size, height: size*(0.6+Math.random()*0.8), fill: color, rx: 6, ry: 6, left: posX, top: posY, originX: 'center', originY: 'center', opacity: 0.85, angle: angle });
+            } else {
+                shape = new fabric.Triangle({ width: size, height: size, fill: color, left: posX, top: posY, originX: 'center', originY: 'center', opacity: 0.85, angle: angle });
+            }
+            canvas.add(shape);
+            canvas.setActiveObject(shape);
+        }
+        canvas.renderAll();
+    }
+    
+    // 4. Smooth scroll to canvas
+    var canvasSection = document.querySelector('#canvas-workshop') || document.querySelector('.canvas-workshop-section') || document.querySelector('canvas');
+    if (canvasSection) {
+        canvasSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
+
+
 (function () {
     'use strict';
 
@@ -769,6 +832,35 @@
     }
 
     /* ── Event delegation — marketplace (card clicks) ────────────── */
+            /* ── Marketplace Filter Tabs ── */
+    var mktTabs = document.querySelectorAll('.mkt-tab');
+    var mktItems = document.querySelectorAll('.mkt-item');
+    if (mktTabs.length && mktItems.length) {
+        mktTabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                mktTabs.forEach(function (t) { t.classList.remove('active'); });
+                tab.classList.add('active');
+                var filter = tab.getAttribute('data-mkt-filter');
+
+                mktItems.forEach(function (item) {
+                    var cat = item.getAttribute('data-category');
+                    if (filter === 'all' || cat === filter) {
+                        item.style.display = 'flex';
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateY(8px)';
+                        requestAnimationFrame(function() {
+                            item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                            item.style.opacity = '1';
+                            item.style.transform = 'none';
+                        });
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    }
+
     var mktGrid = document.querySelector('.marketplace-grid');
     if (mktGrid) {
         mktGrid.addEventListener('click', function (e) {
