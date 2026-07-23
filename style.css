@@ -1107,8 +1107,12 @@ body {
 
 /* Infinite Marquee Strip */
 .film-strip {
-    display: flex;
-    flex-wrap: nowrap;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    overflow: hidden;
+    overflow-y: hidden !important;
+    height: 380px; /* Strict height limit */
     gap: 24px;
     width: max-content;
     animation: filmMarquee 38s linear infinite;
@@ -1117,7 +1121,17 @@ body {
 }
 
 .film-container:hover .film-strip {
-    animation-play-state: paused;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    overflow: hidden;
+    overflow-y: hidden !important;
+    height: 380px; /* Strict height limit */
+    gap: 24px;
+    width: max-content;
+    animation: filmMarquee 38s linear infinite;
+    will-change: transform;
+    pointer-events: auto !important;
 }
 
 @keyframes filmMarquee {
@@ -1128,6 +1142,7 @@ body {
 /* 35mm Frame Card */
 .film-frame {
     flex: 0 0 auto;
+    flex-shrink: 0 !important;
     width: 300px;
     background: #141417;
     border: 1px solid rgba(240, 232, 216, 0.12);
@@ -1687,4 +1702,5 @@ body {
     color: rgba(234, 234, 234, 0.45);
     font-weight: 600;
 }
+
 
