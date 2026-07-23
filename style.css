@@ -334,6 +334,9 @@ body {
     position: absolute;
     inset: 0;
     z-index: 5;
+    background: radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 70%);
+    padding: 80px; /* ensure gradient has room */
+    border-radius: 50%;
     pointer-events: none;
     /* Transparent centre, hard black at extreme edges */
     background: radial-gradient(
@@ -1789,7 +1792,10 @@ body {
 }
 .hero-content {
     position: relative;
-    z-index: 5; /* Above video */
+    z-index: 5;
+    background: radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 70%);
+    padding: 80px; /* ensure gradient has room */
+    border-radius: 50%; /* Above video */
 }
 .scroll-indicator {
     z-index: 5;
@@ -1840,16 +1846,17 @@ body {
 }
 .hero-menu-item {
     font-family: monospace;
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 2px;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    transition: color 0.4s ease;
+    transition: color 0.4s ease, text-shadow 0.4s ease;
 }
 .hero-menu-item:hover, .hero-menu-item.active {
     color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
 /* === Bottom Status Bar === */
@@ -1880,4 +1887,34 @@ body {
     width: 0%;
     /* Smooth progress update */
     transition: width 0.05s linear; 
+}
+
+/* === Top Navigation Header === */
+.top-nav-header {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+.logo-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+}
+.menu-btn {
+    font-family: monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+.menu-btn:hover {
+    opacity: 0.6;
 }

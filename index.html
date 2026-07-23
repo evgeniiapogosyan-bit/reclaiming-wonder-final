@@ -63,6 +63,11 @@
     <!-- Dynamic Background Video Switcher -->
     <div class="hero-bg-video-wrapper">
         <div class="hero-bg-overlay"></div>
+
+    <header class="top-nav-header">
+        <div class="logo-mark">RW.</div>
+        <div class="menu-btn">MENU</div>
+    </header>
         <video id="hero-video-layer-a" class="hero-bg-video active-layer" autoplay muted loop playsinline src="hero-1.mp4"></video>
         <video id="hero-video-layer-b" class="hero-bg-video inactive-layer" autoplay muted loop playsinline src=""></video>
     </div>
@@ -1873,6 +1878,15 @@ document.addEventListener('DOMContentLoaded', function() {
     var statusIndicator = document.getElementById('hero-video-status');
     var progressBar = document.getElementById('hero-video-progress');
     
+    if (statusIndicator) {
+        statusIndicator.style.cursor = 'pointer';
+        statusIndicator.addEventListener('click', function() {
+            var nextIdx = (currentIdx + 1) % videos.length;
+            switchVideo(nextIdx);
+            startAutoSwitch();
+        });
+    }
+    
     var switchInterval;
     var progressInterval;
     var progressTime = 0;
@@ -3458,6 +3472,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
