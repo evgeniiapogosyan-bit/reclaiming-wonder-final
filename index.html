@@ -1956,11 +1956,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
             <div class="faw-info-controls">
-                <span id="faw-track-name" class="faw-track-name">SoundHelix 1</span>
+                <span id="faw-track-name" class="faw-track-name">Arvo P&auml;rt &mdash; Fratres</span>
                 <div class="faw-controls">
-                    <button class="faw-btn" id="faw-prev">&#9194;</button>
                     <button class="faw-btn faw-play-btn" id="faw-play">&#9654;</button>
-                    <button class="faw-btn" id="faw-next">&#9193;</button>
                 </div>
                 <div class="faw-progress-container">
                     <div class="faw-progress-bar" id="faw-progress-bar"></div>
@@ -1972,29 +1970,17 @@ document.addEventListener('DOMContentLoaded', function() {
 // Premium Floating Audio Widget Logic
 document.addEventListener('DOMContentLoaded', function() {
     var apPlay = document.getElementById('faw-play');
-    var apPrev = document.getElementById('faw-prev');
-    var apNext = document.getElementById('faw-next');
-    var apTrackName = document.getElementById('faw-track-name');
+        var apTrackName = document.getElementById('faw-track-name');
     var apProgress = document.getElementById('faw-progress-bar');
     var apToggle = document.getElementById('faw-toggle');
     var apWidget = document.getElementById('faw-widget');
 
     if (!apPlay) return;
 
-    var tracks = [
-        { name: "SoundHelix 1", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-        { name: "SoundHelix 2", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }
-    ];
-    var currentTrackIdx = 0;
-
     const audio = new Audio();
     audio.crossOrigin = "anonymous";
-    audio.loop = false; // changed to false to allow auto-next
-
-    function loadTrack(idx) {
-        apTrackName.textContent = tracks[idx].name;
-        audio.src = tracks[idx].url;
-    }
+    audio.loop = true; // Seamless loop for the single ambient track
+    audio.src = "audio/fratres.mp3";
 
     function togglePlay() {
         if (audio.paused) {
@@ -2012,28 +1998,11 @@ document.addEventListener('DOMContentLoaded', function() {
     audio.addEventListener('play', function() { apPlay.innerHTML = '&#10074;&#10074;'; });
     audio.addEventListener('playing', function() { apPlay.innerHTML = '&#10074;&#10074;'; });
     audio.addEventListener('pause', function() { apPlay.innerHTML = '&#9654;'; });
-    audio.addEventListener('ended', function() {
-        currentTrackIdx = (currentTrackIdx + 1) % tracks.length;
-        loadTrack(currentTrackIdx);
-        audio.play().catch(console.error);
-    });
     audio.addEventListener('timeupdate', function() {
         if (audio.duration) {
             const percent = (audio.currentTime / audio.duration) * 100;
             apProgress.style.width = percent + '%';
         }
-    });
-
-    apNext.addEventListener('click', function() {
-        currentTrackIdx = (currentTrackIdx + 1) % tracks.length;
-        loadTrack(currentTrackIdx);
-        audio.play().catch(console.error);
-    });
-
-    apPrev.addEventListener('click', function() {
-        currentTrackIdx = (currentTrackIdx - 1 + tracks.length) % tracks.length;
-        loadTrack(currentTrackIdx);
-        audio.play().catch(console.error);
     });
 
     // Minimize toggle
@@ -2045,8 +2014,6 @@ document.addEventListener('DOMContentLoaded', function() {
             apToggle.innerHTML = '( &ndash; )';
         }
     });
-
-    loadTrack(0);
 });
 </script>
 </body>
@@ -3556,6 +3523,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }());
 </script>
 </html>
+
 
 
 
